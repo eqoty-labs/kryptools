@@ -1,4 +1,4 @@
-package io.eqoty.kryptotools.crypto
+package io.eqoty.kryptotools.aessiv
 
 import io.eqoty.kryptotools.utils.toUByteArray
 import io.eqoty.kryptotools.utils.toUInt8Array

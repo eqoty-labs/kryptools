@@ -1,9 +1,9 @@
-package io.eqoty.kryptotools.crypto.elliptic.ec
+package io.eqoty.kryptotools.elliptic.ec
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.Sign
-import io.eqoty.kryptotools.crypto.elliptic.BasePoint
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.BN
+import io.eqoty.kryptotools.elliptic.BasePoint
+import io.eqoty.kryptotools.elliptic.biginteger.BN
 
 data class KeyPairValidateResult(val result: Boolean, val reason: String?)
 data class KeyPairSignOptions(val canonical: Boolean? = null, val k: BN?)

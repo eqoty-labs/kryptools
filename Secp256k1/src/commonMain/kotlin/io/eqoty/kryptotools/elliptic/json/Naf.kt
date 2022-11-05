@@ -1,4 +1,4 @@
-package io.eqoty.kryptotools.crypto.elliptic.json
+package io.eqoty.kryptotools.elliptic.json
 
 @kotlinx.serialization.Serializable
 data class Naf(

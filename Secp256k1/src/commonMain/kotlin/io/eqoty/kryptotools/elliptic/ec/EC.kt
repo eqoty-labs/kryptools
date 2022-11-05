@@ -1,10 +1,10 @@
-package io.eqoty.kryptotools.crypto.elliptic.ec
+package io.eqoty.kryptotools.elliptic.ec
 
 import com.ionspin.kotlin.crypto.util.LibsodiumRandom
-import io.eqoty.kryptotools.crypto.elliptic.Curve
-import io.eqoty.kryptotools.crypto.elliptic.ShortCurve
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.BN
-import io.eqoty.kryptotools.crypto.elliptic.curves.Scep256k1Preset
+import io.eqoty.kryptotools.elliptic.Curve
+import io.eqoty.kryptotools.elliptic.ShortCurve
+import io.eqoty.kryptotools.elliptic.biginteger.BN
+import io.eqoty.kryptotools.elliptic.curves.Scep256k1Preset
 
 class EC(val curve: Curve) {
 

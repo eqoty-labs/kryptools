@@ -1,8 +1,8 @@
 package io.eqoty
 
-import io.eqoty.kryptotools.crypto.createWindowBroadcaster
-import io.eqoty.kryptotools.crypto.destroyWindowBroadcaster
-import io.eqoty.kryptotools.crypto.windowIsSetup
+import io.eqoty.kryptotools.aessiv.createWindowBroadcaster
+import io.eqoty.kryptotools.aessiv.destroyWindowBroadcaster
+import io.eqoty.kryptotools.aessiv.windowIsSetup
 import jslibs.happydom.GlobalRegistrator
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope

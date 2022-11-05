@@ -1,6 +1,6 @@
-package io.eqoty.kryptotools.crypto.elliptic.utils
+package io.eqoty.kryptotools.elliptic.utils
 
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.BN
+import io.eqoty.kryptotools.elliptic.biginteger.BN
 import kotlin.math.max
 
 

@@ -2,8 +2,8 @@ package io.eqoty.kryptotools
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.ionspin.kotlin.bignum.integer.Sign
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.BN
-import io.eqoty.kryptotools.crypto.elliptic.ec.EC
+import io.eqoty.kryptotools.elliptic.biginteger.BN
+import io.eqoty.kryptotools.elliptic.ec.EC
 import okio.Buffer
 import okio.ByteString.Companion.toByteString
 

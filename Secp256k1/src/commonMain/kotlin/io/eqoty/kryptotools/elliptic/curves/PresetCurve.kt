@@ -1,6 +1,6 @@
-package io.eqoty.kryptotools.crypto.elliptic.curves
+package io.eqoty.kryptotools.elliptic.curves
 
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.BN
+import io.eqoty.kryptotools.elliptic.biginteger.BN
 
 
 sealed interface PresetCurve {

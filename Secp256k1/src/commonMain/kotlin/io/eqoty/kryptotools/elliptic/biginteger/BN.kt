@@ -1,4 +1,4 @@
-package io.eqoty.kryptotools.crypto.elliptic.biginteger
+package io.eqoty.kryptotools.elliptic.biginteger
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.DecimalMode

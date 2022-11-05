@@ -1,4 +1,4 @@
-package io.eqoty.kryptotools.crypto.elliptic.ec
+package io.eqoty.kryptotools.elliptic.ec
 
 data class KeyPairOptions(
     val priv: UByteArray? = null,

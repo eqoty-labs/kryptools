@@ -1,4 +1,4 @@
-package io.eqoty.kryptotools.crypto
+package io.eqoty.kryptotools.aessiv
 
 import org.cryptomator.siv.SivMode
 

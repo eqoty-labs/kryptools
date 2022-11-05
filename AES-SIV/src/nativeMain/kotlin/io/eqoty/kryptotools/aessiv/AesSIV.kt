@@ -1,4 +1,4 @@
-package io.eqoty.kryptotools.crypto
+package io.eqoty.kryptotools.aessiv
 
 import kotlinx.cinterop.*
 import libaes_siv.AES_SIV_CTX_free

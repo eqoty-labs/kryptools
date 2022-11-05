@@ -1,8 +1,8 @@
 package io.eqoty.kryptotools
 
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.BN
-import io.eqoty.kryptotools.crypto.elliptic.ec.EC
-import io.eqoty.kryptotools.crypto.elliptic.ec.KeyPairSignOptions
+import io.eqoty.kryptotools.elliptic.biginteger.BN
+import io.eqoty.kryptotools.elliptic.ec.EC
+import io.eqoty.kryptotools.elliptic.ec.KeyPairSignOptions
 
 object Secp256k1 {
 

@@ -1,12 +1,12 @@
-package io.eqoty.kryptotools.crypto.elliptic
+package io.eqoty.kryptotools.elliptic
 
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.BN
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.mont
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.red
-import io.eqoty.kryptotools.crypto.elliptic.curves.Endomorphism
-import io.eqoty.kryptotools.crypto.elliptic.curves.PresetCurve
-import io.eqoty.kryptotools.crypto.elliptic.utils.getJSF
-import io.eqoty.kryptotools.crypto.elliptic.utils.getNAF
+import io.eqoty.kryptotools.elliptic.biginteger.BN
+import io.eqoty.kryptotools.elliptic.biginteger.mont
+import io.eqoty.kryptotools.elliptic.biginteger.red
+import io.eqoty.kryptotools.elliptic.curves.Endomorphism
+import io.eqoty.kryptotools.elliptic.curves.PresetCurve
+import io.eqoty.kryptotools.elliptic.utils.getJSF
+import io.eqoty.kryptotools.elliptic.utils.getNAF
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlin.math.max

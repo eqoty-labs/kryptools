@@ -1,8 +1,8 @@
-package io.eqoty.kryptotools.crypto.elliptic
+package io.eqoty.kryptotools.elliptic
 
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.BN
-import io.eqoty.kryptotools.crypto.elliptic.biginteger.bitLength
-import io.eqoty.kryptotools.crypto.elliptic.json.PrecomputedScep256k1
+import io.eqoty.kryptotools.elliptic.biginteger.BN
+import io.eqoty.kryptotools.elliptic.biginteger.bitLength
+import io.eqoty.kryptotools.elliptic.json.PrecomputedScep256k1
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.decodeFromJsonElement
