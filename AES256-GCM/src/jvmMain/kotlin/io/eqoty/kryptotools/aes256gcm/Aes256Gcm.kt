@@ -50,6 +50,8 @@ actual class Aes256Gcm actual constructor() {
      *
      * Danger: This does not authenticate the partially decrypted content. Only use
      * if you know what you are doing.
+     *
+     * Note: this is only correct for a 12 byte IV in GCM mode
      */
     actual fun decryptAtIndexUnauthenticated(
         iv: UByteArray,
@@ -59,19 +61,12 @@ actual class Aes256Gcm actual constructor() {
         hasTag: Boolean
     ): UByteArray {
         val ctr = Cipher.getInstance("AES/CTR/NoPadding")
-        // WARNING: this is only correct for a 12 byte IV in GCM mode
-
-        val counter = iv + UByteArray(4)
-
         // the GCM specification you can see that the IV for CTR is simply the IV, appended with four bytes 00000002
         // (i.e. a counter starting at zero, increased by one for calculating the authentication tag and again for the
         // starting value of the counter for encryption).
         // https://stackoverflow.com/a/49244840/1363742
         val ctrBytes = (2 + offset).toUByteArray()
-        counter[counter.size - 4] = ctrBytes[0]
-        counter[counter.size - 3] = ctrBytes[1]
-        counter[counter.size - 2] = ctrBytes[2]
-        counter[counter.size - 1] = ctrBytes[3]
+        val counter = iv + ctrBytes
 
         val ctrIV = IvParameterSpec(counter.toByteArray())
         val keySpec: SecretKey = SecretKeySpec(key.toByteArray(), "AES")
