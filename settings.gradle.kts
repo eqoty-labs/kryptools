@@ -44,6 +44,7 @@ refreshVersions { // Optional: configure the plugin
 }
 
 include(":AES-SIV")
+include(":AES256-GCM")
 include(":Axlsign")
 include(":Bech32")
 include(":Secp256k1")
