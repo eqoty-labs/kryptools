@@ -1,4 +1,4 @@
-rootProject.name = "kryptoTools"
+rootProject.name = "kryptools"
 
 pluginManagement {
     repositories {
@@ -43,8 +43,8 @@ refreshVersions { // Optional: configure the plugin
     // ...
 }
 
-include(":AES-SIV")
-include(":AES256-GCM")
-include(":Axlsign")
-include(":Bech32")
-include(":Secp256k1")
+include(":aes-siv")
+include(":aes256-gcm")
+include(":axlsign")
+include(":bech32")
+include(":secp256k1")
