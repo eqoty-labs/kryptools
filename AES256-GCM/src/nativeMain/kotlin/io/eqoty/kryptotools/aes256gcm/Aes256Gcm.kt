@@ -1,18 +1,28 @@
 package io.eqoty.kryptotools.aes256gcm
 
 actual class Aes256Gcm actual constructor() {
-    actual suspend fun encrypt(
-        txEncryptionKey: UByteArray,
-        plaintext: UByteArray,
-        associatedData: UByteArray
+    actual fun encrypt(
+        iv: UByteArray,
+        key: UByteArray,
+        plaintext: UByteArray
     ): UByteArray {
         TODO("Not yet implemented")
     }
 
-    actual suspend fun decrypt(
-        txEncryptionKey: UByteArray,
+    actual fun decrypt(
+        iv: UByteArray,
+        key: UByteArray,
+        ciphertext: UByteArray
+    ): UByteArray {
+        TODO("Not yet implemented")
+    }
+
+    actual fun decryptAtIndexUnauthenticated(
+        iv: UByteArray,
+        key: UByteArray,
         ciphertext: UByteArray,
-        associatedData: UByteArray
+        offset: Int,
+        hasTag: Boolean
     ): UByteArray {
         TODO("Not yet implemented")
     }
