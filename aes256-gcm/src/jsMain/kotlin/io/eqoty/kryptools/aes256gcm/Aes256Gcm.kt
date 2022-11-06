@@ -14,6 +14,8 @@ private fun UByteArray.toUInt8Array(): Uint8Array = Uint8Array(toByteArray().toT
 actual class Aes256Gcm {
 
     val crypto = Crypto()
+    val cryptoKeysCtr = mutableMapOf<UByteArray, CryptoKey>()
+    val cryptoKeysGcm = mutableMapOf<UByteArray, CryptoKey>()
 
     private fun Uint8Array.toUByteArray(): UByteArray {
         if (length.asDynamic() == undefined) {
@@ -56,10 +58,10 @@ actual class Aes256Gcm {
         jsparams.iv = iv.toUInt8Array()
         jsparams.tagLength = TAG_SIZE_BITS
 
-
+        val cryptoKey = cryptoKeysGcm.getOrPut(key) { importSecretKey(crypto, key, "AES-GCM").await() }
         val encryptedBuffer = crypto.subtle.encrypt(
             jsparams as AesGcmParams,
-            importSecretKey(crypto, key, "AES-GCM").await(),
+            cryptoKey,
             plaintext.toUInt8Array()
         ).await()
         return Uint8Array(encryptedBuffer).toUByteArray()
@@ -77,10 +79,10 @@ actual class Aes256Gcm {
         jsparams.iv = iv.toUInt8Array()
         jsparams.tagLength = TAG_SIZE_BITS
 
-
+        val cryptoKey = cryptoKeysGcm.getOrPut(key) { importSecretKey(crypto, key, "AES-GCM").await() }
         val plaintextBuffer = crypto.subtle.decrypt(
             jsparams as AesGcmParams,
-            importSecretKey(crypto, key, "AES-GCM").await(),
+            cryptoKey,
             ciphertext.toUInt8Array()
         ).await()
         return Uint8Array(plaintextBuffer).toUByteArray()
@@ -104,10 +106,10 @@ actual class Aes256Gcm {
         jsparams.counter = counter.toUInt8Array()
         jsparams.length = inputLen
 
-
+        val cryptoKey = cryptoKeysCtr.getOrPut(key) { importSecretKey(crypto, key, "AES-CTR").await() }
         val plaintextBuffer = crypto.subtle.decrypt(
             jsparams as AesCtrParams,
-            importSecretKey(crypto, key, "AES-CTR").await(),
+            cryptoKey,
             ciphertext.toUInt8Array()
         ).await()
         return Uint8Array(plaintextBuffer).toUByteArray()
