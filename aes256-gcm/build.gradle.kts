@@ -40,8 +40,12 @@ kotlin {
         withJava()
     }
     js(IR) {
-        browser{
-            testTask { useMocha() }
+        browser {
+            testTask {
+                useMocha {
+                    timeout = "20s"
+                }
+            }
         }
         nodejs()
     }
@@ -62,7 +66,7 @@ kotlin {
         }
         val jsMain by getting {
             dependsOn(commonMain)
-            dependencies{
+            dependencies {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(npm("@peculiar/webcrypto", "^1.4.1"))

@@ -1,13 +1,13 @@
 package io.eqoty.kryptools.aes256gcm
 
 import Crypto
+import jslibs.tsstdlib.AesCtrParams
 import jslibs.tsstdlib.AesGcmParams
 import jslibs.tsstdlib.CryptoKey
 import kotlinx.coroutines.await
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.khronos.webgl.ArrayBuffer
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 import kotlin.js.Promise
@@ -35,10 +35,23 @@ private data class AesGcmParamsImpl(
     )
 }
 
-private data class Test(
-    var aaa: Uint8Array?,
-    var bbb: ArrayBuffer,
-)
+@Serializable
+private data class AesCtrParamsImpl(
+    var counter: ByteArray,
+    var length: Long,
+    var name: String
+) {
+    constructor(
+        counter: UByteArray,
+        length: Long,
+        name: String
+    ) : this(
+        counter.toByteArray(),
+        length,
+        name
+    )
+}
+
 
 actual class Aes256Gcm {
 
@@ -62,11 +75,11 @@ actual class Aes256Gcm {
     Takes an ArrayBuffer string containing the bytes, and returns a Promise
     that will resolve to a CryptoKey representing the secret key.
      */
-    fun importSecretKey(crypto: Crypto, rawKey: UByteArray): Promise<CryptoKey> {
+    fun importSecretKey(crypto: Crypto, rawKey: UByteArray, algorithm: String): Promise<CryptoKey> {
         return crypto.subtle.importKey(
             "raw",
             rawKey.toUInt8Array(),
-            "AES-GCM",
+            algorithm,
             true,
             arrayOf("encrypt", "decrypt")
         )
@@ -81,7 +94,7 @@ actual class Aes256Gcm {
         val params = AesGcmParamsImpl(
             name = "AES-GCM",
             iv = iv,
-            tagLength = 128
+            tagLength = TAG_SIZE_BITS
         )
 
         // A stupid hacky workaround for creating js object instances
@@ -96,7 +109,7 @@ actual class Aes256Gcm {
 
         val encryptedBuffer = crypto.subtle.encrypt(
             jsparams,
-            importSecretKey(crypto, key).await(),
+            importSecretKey(crypto, key, "AES-GCM").await(),
             plaintext.toUInt8Array()
         ).await()
         return Uint8Array(encryptedBuffer).toUByteArray()
@@ -110,7 +123,7 @@ actual class Aes256Gcm {
         val params = AesGcmParamsImpl(
             name = "AES-GCM",
             iv = iv,
-            tagLength = 128
+            tagLength = TAG_SIZE_BITS
         )
 
         // A stupid hacky workaround for creating js object instances
@@ -125,7 +138,7 @@ actual class Aes256Gcm {
 
         val plaintextBuffer = crypto.subtle.decrypt(
             jsparams,
-            importSecretKey(crypto, key).await(),
+            importSecretKey(crypto, key, "AES-GCM").await(),
             ciphertext.toUInt8Array()
         ).await()
         return Uint8Array(plaintextBuffer).toUByteArray()
@@ -138,7 +151,30 @@ actual class Aes256Gcm {
         offset: Int,
         hasTag: Boolean
     ): UByteArray {
-        TODO("Not yet implemented")
+        val counter = getCounterBytes(iv, offset)
+        val inputLen = if (hasTag) {
+            (ciphertext.size - TAG_SIZE_BYTES) * 8
+        } else ciphertext.size
+        val params = AesCtrParamsImpl(
+            name = "AES-CTR",
+            counter = counter,
+            length = inputLen.toLong()
+        )
+
+        // A stupid hacky workaround for creating js object instances
+        // https://youtrack.jetbrains.com/issue/KT-44944/KJS-Non-mangled-types 🙃
+        val jsparams = JSON.parse<AesCtrParams>(Json.encodeToString(params))
+        // JSON.parse doesn't set the type of counter data as Uint8Array,
+        // it is just a normal array of Ints. So wrap them manually
+        jsparams.counter = Uint8Array(jsparams.counter)
+
+
+        val plaintextBuffer = crypto.subtle.decrypt(
+            jsparams,
+            importSecretKey(crypto, key, "AES-CTR").await(),
+            ciphertext.toUInt8Array()
+        ).await()
+        return Uint8Array(plaintextBuffer).toUByteArray()
     }
 
 }

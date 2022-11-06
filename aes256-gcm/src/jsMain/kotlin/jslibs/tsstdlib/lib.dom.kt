@@ -17,9 +17,7 @@ external interface AesCbcParams : Algorithm {
 }
 
 external interface AesCtrParams : Algorithm {
-    var counter: dynamic /* Int8Array | Int16Array | Int32Array | Uint8Array | Uint16Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array | DataView | ArrayBuffer */
-        get() = definedExternally
-        set(value) = definedExternally
+    var counter: Uint8Array /* Int8Array | Int16Array | Int32Array | Uint8Array | Uint16Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array | DataView | ArrayBuffer */
     var length: Number
 }
 

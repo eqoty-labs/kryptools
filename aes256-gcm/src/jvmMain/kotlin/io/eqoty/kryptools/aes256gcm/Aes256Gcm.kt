@@ -6,8 +6,6 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-private const val TAG_SIZE_BITS = 128
-private const val TAG_SIZE_BYTES = 16
 
 actual class Aes256Gcm actual constructor() {
 
@@ -35,12 +33,6 @@ actual class Aes256Gcm actual constructor() {
         return gcm.doFinal(ciphertext.toByteArray()).toUByteArray()
     }
 
-    fun Int.toUByteArray(): UByteArray {
-        val bytes = UByteArray(4)
-        (0..3).forEach { i -> bytes[bytes.size - 1 - i] = (this shr (i * 8)).toUByte() }
-        return bytes
-    }
-
     /***
      * @param iv - initialization vector (should be 12 bytes)
      * @param key - the secret key (should be 16 bytes)
@@ -61,12 +53,7 @@ actual class Aes256Gcm actual constructor() {
         hasTag: Boolean
     ): UByteArray {
         val ctr = Cipher.getInstance("AES/CTR/NoPadding")
-        // the GCM specification you can see that the IV for CTR is simply the IV, appended with four bytes 00000002
-        // (i.e. a counter starting at zero, increased by one for calculating the authentication tag and again for the
-        // starting value of the counter for encryption).
-        // https://stackoverflow.com/a/49244840/1363742
-        val ctrBytes = (2 + offset).toUByteArray()
-        val counter = iv + ctrBytes
+        val counter = getCounterBytes(iv, offset)
 
         val ctrIV = IvParameterSpec(counter.toByteArray())
         val keySpec: SecretKey = SecretKeySpec(key.toByteArray(), "AES")

@@ -1,5 +1,8 @@
 package io.eqoty.kryptools.aes256gcm
 
+internal const val TAG_SIZE_BITS = 128
+internal const val TAG_SIZE_BYTES = 16
+
 expect class Aes256Gcm() {
 
     /***
@@ -42,4 +45,20 @@ expect class Aes256Gcm() {
         hasTag: Boolean = false
     ): UByteArray
 
+}
+
+fun Aes256Gcm.getCounterBytes(iv: UByteArray, offset: Int): UByteArray {
+    // the GCM specification you can see that the IV for CTR is simply the IV, appended with four bytes 00000002
+    // (i.e. a counter starting at zero, increased by one for calculating the authentication tag and again for the
+    // starting value of the counter for encryption).
+    // https://stackoverflow.com/a/49244840/1363742
+    val ctrBytes = (2 + offset).toUByteArray()
+    return iv + ctrBytes
+}
+
+
+internal fun Int.toUByteArray(): UByteArray {
+    val bytes = UByteArray(4)
+    (0..3).forEach { i -> bytes[bytes.size - 1 - i] = (this shr (i * 8)).toUByte() }
+    return bytes
 }
