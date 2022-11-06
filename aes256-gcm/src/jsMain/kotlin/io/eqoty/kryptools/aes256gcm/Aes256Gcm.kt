@@ -94,10 +94,9 @@ actual class Aes256Gcm {
             jsparams.additionalData = Uint8Array(jsparams.additionalData!!)
         }
 
-        val key = importSecretKey(crypto, key).await()
         val encryptedBuffer = crypto.subtle.encrypt(
             jsparams,
-            key,
+            importSecretKey(crypto, key).await(),
             plaintext.toUInt8Array()
         ).await()
         return Uint8Array(encryptedBuffer).toUByteArray()
