@@ -4,7 +4,6 @@ plugins {
     @Suppress("DSL_SCOPE_VIOLATION")
     val libs = libs
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
-    alias(libs.plugins.org.jetbrains.kotlin.plugin.serialization)
     alias(libs.plugins.com.vanniktech.maven.publish)
 }
 
@@ -68,7 +67,6 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.serialization.json)
                 implementation(npm("@peculiar/webcrypto", "^1.4.1"))
             }
         }
