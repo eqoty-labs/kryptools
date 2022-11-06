@@ -59,7 +59,7 @@ class Aes256GcmTests {
         val aes256Gcm = Aes256Gcm()
         val iv = rand.nextUBytes(12)
         val key = rand.nextUBytes(16)
-        val blocks = 5000
+        val blocks = 257
         val plainText = rand.nextUBytes(16 * blocks)
         val cypherText = aes256Gcm.encrypt(iv, key, plainText)
         assertFalse(plainText.contentEquals(cypherText), "plainText is the same as cypherText")
