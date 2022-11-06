@@ -5,29 +5,20 @@ import jslibs.tsstdlib.AesCtrParams
 import jslibs.tsstdlib.AesGcmParams
 import jslibs.tsstdlib.CryptoKey
 import kotlinx.coroutines.await
+import org.khronos.webgl.ArrayBuffer
+import org.khronos.webgl.Int8Array
 import org.khronos.webgl.Uint8Array
-import org.khronos.webgl.get
 import kotlin.js.Promise
 
-private fun UByteArray.toUInt8Array(): Uint8Array = Uint8Array(toByteArray().toTypedArray())
+private fun UByteArray.toUInt8Array(): Uint8Array = Uint8Array(asByteArray().unsafeCast<Int8Array>().buffer)
+private fun Uint8Array.asByteArray(): ByteArray = this.unsafeCast<ByteArray>()
+private fun ArrayBuffer.asUByteArray(): UByteArray = Int8Array(this).unsafeCast<ByteArray>().asUByteArray()
 
 actual class Aes256Gcm {
 
     val crypto = Crypto()
     val cryptoKeysCtr = mutableMapOf<UByteArray, CryptoKey>()
     val cryptoKeysGcm = mutableMapOf<UByteArray, CryptoKey>()
-
-    private fun Uint8Array.toUByteArray(): UByteArray {
-        if (length.asDynamic() == undefined) {
-            println("Error")
-        }
-        val result = UByteArray(length)
-        for (i in 0 until length) {
-            result[i] = get(i).toUByte()
-        }
-
-        return result
-    }
 
 
     /***
@@ -64,7 +55,7 @@ actual class Aes256Gcm {
             cryptoKey,
             plaintext.toUInt8Array()
         ).await()
-        return Uint8Array(encryptedBuffer).toUByteArray()
+        return encryptedBuffer.asUByteArray()
     }
 
     actual suspend fun decrypt(
@@ -85,7 +76,7 @@ actual class Aes256Gcm {
             cryptoKey,
             ciphertext.toUInt8Array()
         ).await()
-        return Uint8Array(plaintextBuffer).toUByteArray()
+        return plaintextBuffer.asUByteArray()
     }
 
     actual suspend fun decryptAtIndexUnauthenticated(
@@ -112,7 +103,6 @@ actual class Aes256Gcm {
             cryptoKey,
             ciphertext.toUInt8Array()
         ).await()
-        return Uint8Array(plaintextBuffer).toUByteArray()
+        return plaintextBuffer.asUByteArray()
     }
-
 }
