@@ -11,7 +11,7 @@ actual class AesSIV {
     ): UByteArray {
         val macKey = ByteArray(txEncryptionKey.size / 2) { i -> txEncryptionKey[i].toByte() }
         val ctrKey = ByteArray(txEncryptionKey.size / 2) { i -> txEncryptionKey[txEncryptionKey.size / 2 + i].toByte() }
-        return aesSIV.encrypt(ctrKey, macKey, plaintext.toByteArray(), associatedData.toByteArray()).toUByteArray()
+        return aesSIV.encrypt(ctrKey, macKey, plaintext.asByteArray(), associatedData.asByteArray()).asUByteArray()
     }
 
     actual suspend fun decrypt(
@@ -21,6 +21,6 @@ actual class AesSIV {
     ): UByteArray {
         val macKey = ByteArray(txEncryptionKey.size / 2) { i -> txEncryptionKey[i].toByte() }
         val ctrKey = ByteArray(txEncryptionKey.size / 2) { i -> txEncryptionKey[txEncryptionKey.size / 2 + i].toByte() }
-        return aesSIV.decrypt(ctrKey, macKey, ciphertext.toByteArray(), associatedData.toByteArray()).toUByteArray()
+        return aesSIV.decrypt(ctrKey, macKey, ciphertext.asByteArray(), associatedData.asByteArray()).asUByteArray()
     }
 }

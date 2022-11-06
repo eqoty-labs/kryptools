@@ -1,7 +1,7 @@
 package io.eqoty.kryptools.aessiv
 
-import io.eqoty.kryptools.utils.toUByteArray
-import io.eqoty.kryptools.utils.toUInt8Array
+import io.eqoty.kryptools.utils.asUByteArray
+import io.eqoty.kryptools.utils.asUInt8Array
 import jslibs.miscreant.SIV
 import kotlinx.coroutines.await
 import kotlinx.coroutines.flow.*
@@ -47,9 +47,9 @@ actual class AesSIV {
         if (!windowIsSetup.value) {
             awaitFakeWindow()
         }
-        val key = SIV.importKey(txEncryptionKey.toUInt8Array(), "AES-SIV").await()
+        val key = SIV.importKey(txEncryptionKey.asUInt8Array(), "AES-SIV").await()
         val ciphertext =
-            key.seal(plaintext.toUInt8Array(), arrayOf(associatedData.toUInt8Array())).await().toUByteArray()
+            key.seal(plaintext.asUInt8Array(), arrayOf(associatedData.asUInt8Array())).await().asUByteArray()
         if (initiallyHadNoWindow) {
             awaitDestroyFakeWindow()
         }
@@ -64,9 +64,9 @@ actual class AesSIV {
         if (!windowIsSetup.value) {
             awaitFakeWindow()
         }
-        val key = SIV.importKey(txEncryptionKey.toUInt8Array(), "AES-SIV").await()
+        val key = SIV.importKey(txEncryptionKey.asUInt8Array(), "AES-SIV").await()
         val plaintext =
-            key.open(ciphertext.toUInt8Array(), arrayOf(associatedData.toUInt8Array())).await().toUByteArray()
+            key.open(ciphertext.asUInt8Array(), arrayOf(associatedData.asUInt8Array())).await().asUByteArray()
         if (initiallyHadNoWindow) {
             awaitDestroyFakeWindow()
         }
