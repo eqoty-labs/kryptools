@@ -1,16 +1,20 @@
 package io.eqoty.kryptools.aes256gcm
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.random.Random
 import kotlin.random.nextUBytes
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFalse
+import kotlinx.coroutines.test.runTest
 
+
+@ExperimentalCoroutinesApi
 class Aes256GcmTests {
 
 
     @Test
-    fun encryptsAndDecryptsOk() {
+    fun encryptsAndDecryptsOk() = runTest {
         val rand = Random(0)
         val aes256Gcm = Aes256Gcm()
         val iv = rand.nextUBytes(12)
@@ -23,7 +27,7 @@ class Aes256GcmTests {
     }
 
     @Test
-    fun encryptsAndDecrypts3BlocksPartiallyOk() {
+    fun encryptsAndDecrypts3BlocksPartiallyOk() = runTest {
         val rand = Random(0)
         val aes256Gcm = Aes256Gcm()
         val iv = rand.nextUBytes(12)
@@ -50,7 +54,7 @@ class Aes256GcmTests {
      * tests when counter bytes can't be represented by one byte
      */
     @Test
-    fun encryptsAndDecrypts257BlocksPartiallyOk() {
+    fun encryptsAndDecrypts257BlocksPartiallyOk() = runTest {
         val rand = Random(0)
         val aes256Gcm = Aes256Gcm()
         val iv = rand.nextUBytes(12)
@@ -71,7 +75,7 @@ class Aes256GcmTests {
      * tests when counter bytes can't be represented by three bytes
      */
     @Test
-    fun encryptsAndDecrypts65536BlocksPartiallyOk() {
+    fun encryptsAndDecrypts65536BlocksPartiallyOk() = runTest {
         val rand = Random(0)
         val aes256Gcm = Aes256Gcm()
         val iv = rand.nextUBytes(12)

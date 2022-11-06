@@ -11,7 +11,7 @@ private const val TAG_SIZE_BYTES = 16
 
 actual class Aes256Gcm actual constructor() {
 
-    actual fun encrypt(
+    actual suspend fun encrypt(
         iv: UByteArray,
         key: UByteArray,
         plaintext: UByteArray
@@ -23,7 +23,7 @@ actual class Aes256Gcm actual constructor() {
         return gcm.doFinal(plaintext.toByteArray()).toUByteArray()
     }
 
-    actual fun decrypt(
+    actual suspend fun decrypt(
         iv: UByteArray,
         key: UByteArray,
         ciphertext: UByteArray
@@ -53,7 +53,7 @@ actual class Aes256Gcm actual constructor() {
      *
      * Note: this is only correct for a 12 byte IV in GCM mode
      */
-    actual fun decryptAtIndexUnauthenticated(
+    actual suspend fun decryptAtIndexUnauthenticated(
         iv: UByteArray,
         key: UByteArray,
         ciphertext: UByteArray,

@@ -7,7 +7,7 @@ expect class Aes256Gcm() {
      * @param key - the secret key (should be of size 16)
      * @param plaintext - the binary to encrypt
      */
-    fun encrypt(
+    suspend fun encrypt(
         iv: UByteArray,
         key: UByteArray,
         plaintext: UByteArray
@@ -18,7 +18,7 @@ expect class Aes256Gcm() {
      * @param key - the secret key (should be of size 16)
      * @param ciphertext - the binary to decrypt
      */
-    fun decrypt(
+    suspend fun decrypt(
         iv: UByteArray,
         key: UByteArray,
         ciphertext: UByteArray
@@ -34,7 +34,7 @@ expect class Aes256Gcm() {
      * Danger there be dragons: This does not authenticate the partially decrypted content. Only use
      * if you know what you are doing.
      */
-    fun decryptAtIndexUnauthenticated(
+    suspend fun decryptAtIndexUnauthenticated(
         iv: UByteArray,
         key: UByteArray,
         ciphertext: UByteArray,
