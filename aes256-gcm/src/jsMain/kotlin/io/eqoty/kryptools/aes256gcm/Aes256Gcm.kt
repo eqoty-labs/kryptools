@@ -42,6 +42,7 @@ private data class Test(
 
 actual class Aes256Gcm {
 
+    val crypto = Crypto()
 
     private fun Uint8Array.toUByteArray(): UByteArray {
         if (length.asDynamic() == undefined) {
@@ -77,7 +78,6 @@ actual class Aes256Gcm {
         key: UByteArray,
         plaintext: UByteArray
     ): UByteArray {
-        val crypto = Crypto()
         val params = AesGcmParamsImpl(
             name = "AES-GCM",
             iv = iv,
@@ -107,7 +107,28 @@ actual class Aes256Gcm {
         key: UByteArray,
         ciphertext: UByteArray
     ): UByteArray {
-        TODO("Not yet implemented")
+        val params = AesGcmParamsImpl(
+            name = "AES-GCM",
+            iv = iv,
+            tagLength = 128
+        )
+
+        // A stupid hacky workaround for creating js object instances
+        // https://youtrack.jetbrains.com/issue/KT-44944/KJS-Non-mangled-types 🙃
+        val jsparams = JSON.parse<AesGcmParams>(Json.encodeToString(params))
+        // JSON.parse doesn't set the type of iv or additionalData data as Uint8Array,
+        // it is just a normal array of Ints. So wrap them manually
+        jsparams.iv = Uint8Array(jsparams.iv)
+        if (jsparams.additionalData != undefined || jsparams.additionalData != null) {
+            jsparams.additionalData = Uint8Array(jsparams.additionalData!!)
+        }
+
+        val plaintextBuffer = crypto.subtle.decrypt(
+            jsparams,
+            importSecretKey(crypto, key).await(),
+            ciphertext.toUInt8Array()
+        ).await()
+        return Uint8Array(plaintextBuffer).toUByteArray()
     }
 
     actual suspend fun decryptAtIndexUnauthenticated(
