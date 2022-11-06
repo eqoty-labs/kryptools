@@ -42,7 +42,7 @@ kotlin {
         browser {
             testTask {
                 useMocha {
-                    timeout = "20s"
+                    timeout = "60s"
                 }
             }
         }

@@ -37,17 +37,17 @@ class Aes256GcmTests {
         val cypherText = aes256Gcm.encrypt(iv, key, plainText)
         assertFalse(plainText.contentEquals(cypherText), "plainText is the same as cypherText")
 
-        val firstBlockCypherText = cypherText.copyOfRange(0, 16)
+        val firstBlockCypherText = cypherText.sliceArray(0 until 16)
         var decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(iv, key, firstBlockCypherText, 0)
-        assertContentEquals(plainText.copyOfRange(0, 16), decryptedPlainText)
+        assertContentEquals(plainText.sliceArray(0 until 16), decryptedPlainText)
 
-        val secondBlockCypherText = cypherText.copyOfRange(16, 32)
+        val secondBlockCypherText = cypherText.sliceArray(16 until 32)
         decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(iv, key, secondBlockCypherText, 1)
-        assertContentEquals(plainText.copyOfRange(16, 32), decryptedPlainText)
+        assertContentEquals(plainText.sliceArray(16 until 32), decryptedPlainText)
 
-        val thirdBlockCypherText = cypherText.copyOfRange(32, 48)
+        val thirdBlockCypherText = cypherText.sliceArray(32 until 48)
         decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(iv, key, thirdBlockCypherText, 2)
-        assertContentEquals(plainText.copyOfRange(32, 48), decryptedPlainText)
+        assertContentEquals(plainText.sliceArray(32 until 48), decryptedPlainText)
     }
 
     /***
@@ -65,9 +65,9 @@ class Aes256GcmTests {
         assertFalse(plainText.contentEquals(cypherText), "plainText is the same as cypherText")
 
         for (i in 0 until blocks) {
-            val blockOfCypherText = cypherText.copyOfRange(i * 16, (i + 1) * 16)
+            val blockOfCypherText = cypherText.sliceArray(i * 16 until (i + 1) * 16)
             val decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(iv, key, blockOfCypherText, i)
-            assertContentEquals(plainText.copyOfRange(i * 16, (i + 1) * 16), decryptedPlainText)
+            assertContentEquals(plainText.sliceArray(i * 16 until (i + 1) * 16), decryptedPlainText)
         }
     }
 
@@ -86,9 +86,9 @@ class Aes256GcmTests {
         assertFalse(plainText.contentEquals(cypherText), "plainText is the same as cypherText")
 
         for (i in 0 until blocks) {
-            val blockOfCypherText = cypherText.copyOfRange(i * 16, (i + 1) * 16)
+            val blockOfCypherText = cypherText.sliceArray(i * 16 until (i + 1) * 16)
             val decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(iv, key, blockOfCypherText, i)
-            assertContentEquals(plainText.copyOfRange(i * 16, (i + 1) * 16), decryptedPlainText)
+            assertContentEquals(plainText.sliceArray(i * 16 until (i + 1) * 16), decryptedPlainText)
         }
     }
 
