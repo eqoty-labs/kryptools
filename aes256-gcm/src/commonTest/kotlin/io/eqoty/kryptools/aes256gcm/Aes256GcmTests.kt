@@ -1,12 +1,12 @@
 package io.eqoty.kryptools.aes256gcm
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import kotlin.random.Random
 import kotlin.random.nextUBytes
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFalse
-import kotlinx.coroutines.test.runTest
 
 
 @ExperimentalCoroutinesApi

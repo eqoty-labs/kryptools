@@ -15,10 +15,10 @@ actual class Aes256Gcm actual constructor() {
         plaintext: UByteArray
     ): UByteArray {
         val gcm: Cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        val keySpec: SecretKey = SecretKeySpec(key.toByteArray(), "AES")
-        val ivParam = GCMParameterSpec(TAG_SIZE_BITS, iv.toByteArray())
+        val keySpec: SecretKey = SecretKeySpec(key.asByteArray(), "AES")
+        val ivParam = GCMParameterSpec(TAG_SIZE_BITS, iv.asByteArray())
         gcm.init(Cipher.ENCRYPT_MODE, keySpec, ivParam)
-        return gcm.doFinal(plaintext.toByteArray()).toUByteArray()
+        return gcm.doFinal(plaintext.asByteArray()).asUByteArray()
     }
 
     actual suspend fun decrypt(
@@ -27,10 +27,10 @@ actual class Aes256Gcm actual constructor() {
         ciphertext: UByteArray
     ): UByteArray {
         val gcm = Cipher.getInstance("AES/GCM/NoPadding")
-        val gcmParameterSpec = GCMParameterSpec(TAG_SIZE_BITS, iv.toByteArray())
-        val keySpec: SecretKey = SecretKeySpec(key.toByteArray(), "AES")
+        val gcmParameterSpec = GCMParameterSpec(TAG_SIZE_BITS, iv.asByteArray())
+        val keySpec: SecretKey = SecretKeySpec(key.asByteArray(), "AES")
         gcm.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec)
-        return gcm.doFinal(ciphertext.toByteArray()).toUByteArray()
+        return gcm.doFinal(ciphertext.asByteArray()).asUByteArray()
     }
 
     /***
@@ -55,14 +55,14 @@ actual class Aes256Gcm actual constructor() {
         val ctr = Cipher.getInstance("AES/CTR/NoPadding")
         val counter = getCounterBytes(iv, offset)
 
-        val ctrIV = IvParameterSpec(counter.toByteArray())
-        val keySpec: SecretKey = SecretKeySpec(key.toByteArray(), "AES")
+        val ctrIV = IvParameterSpec(counter.asByteArray())
+        val keySpec: SecretKey = SecretKeySpec(key.asByteArray(), "AES")
         ctr.init(Cipher.DECRYPT_MODE, keySpec, ctrIV)
         val inputLen = if (hasTag) {
             ciphertext.size - TAG_SIZE_BYTES
         } else ciphertext.size
 
-        return ctr.doFinal(ciphertext.toByteArray(), 0, inputLen).toUByteArray()
+        return ctr.doFinal(ciphertext.asByteArray(), 0, inputLen).asUByteArray()
     }
 
 }
