@@ -6,6 +6,7 @@ import kotlin.random.Random
 import kotlin.random.nextUBytes
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 
@@ -22,7 +23,8 @@ class Aes256GcmTests {
         val plainText = rand.nextUBytes(256)
         val cypherText = aes256Gcm.encrypt(iv, key, plainText)
         val decryptedPlainText = aes256Gcm.decrypt(iv, key, cypherText)
-
+        val tagBytesSize = 16
+        assertEquals(plainText.size, cypherText.size - tagBytesSize)
         assertContentEquals(plainText, decryptedPlainText)
     }
 
