@@ -1,19 +1,9 @@
 package io.eqoty.kryptools.utils
 
+import org.khronos.webgl.Int8Array
 import org.khronos.webgl.Uint8Array
-import org.khronos.webgl.get
 
-fun UByteArray.toUInt8Array(): Uint8Array = Uint8Array(toByteArray().toTypedArray())
+fun UByteArray.asUInt8Array(): Uint8Array = Uint8Array(asByteArray().unsafeCast<Int8Array>().buffer)
 
 
-fun Uint8Array.toUByteArray(): UByteArray {
-    if (length.asDynamic() == undefined) {
-        println("Error")
-    }
-    val result = UByteArray(length)
-    for (i in 0 until length) {
-        result[i] = get(i).toUByte()
-    }
-
-    return result
-}
+fun Uint8Array.asUByteArray(): UByteArray = Int8Array(this.buffer).unsafeCast<ByteArray>().asUByteArray()

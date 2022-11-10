@@ -5,5 +5,5 @@ fun addressToBytes(address: String): ByteArray {
 }
 
 fun addressToUBytes(address: String): UByteArray {
-    return Bech32.decode(address).data.toUByteArray()
+    return Bech32.decode(address).data.asUByteArray()
 }

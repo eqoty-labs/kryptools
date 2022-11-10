@@ -10,15 +10,14 @@ fun UByteArray.toIntArray(): IntArray =
 fun IntArray.toUByteArray(): UByteArray =
     map { it.toUByte() }.toUByteArray()
 
-
-fun UByteArray.toByteString(): ByteString =
-    toByteArray().toByteString()
+fun UByteArray.asByteString(): ByteString =
+    asByteArray().toByteString()
 
 fun UByteArray.decodeToString(): String =
-    toByteArray().decodeToString()
+    asByteArray().decodeToString()
 
 fun ByteString.toUByteArray(): UByteArray =
-    toByteArray().toUByteArray()
+    toByteArray().asUByteArray()
 
 fun UByteArray.getPadded(length: Int): UByteArray {
     val paddingLength = length - this.size
