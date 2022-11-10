@@ -1,4 +1,5 @@
-import io.eqoty.kryptools.bech32.Bech32
+package io.eqoty.kryptools.bech32
+
 
 fun addressToBytes(address: String): ByteArray {
     return Bech32.decode(address).data
