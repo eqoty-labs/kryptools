@@ -157,3 +157,5 @@ lint/tmp/
 
 .DS_Store
 nativelibs/libaes_siv_build/
+
+**/externals
