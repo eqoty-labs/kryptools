@@ -46,14 +46,6 @@ kotlin {
     }
 
     sourceSets {
-        all {
-            languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
-        }
-        val commonMain by getting {
-            dependencies {
-                implementation(libs.com.ionspin.kotlin.multiplatformCryptoLibsodiumBindings)
-            }
-        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

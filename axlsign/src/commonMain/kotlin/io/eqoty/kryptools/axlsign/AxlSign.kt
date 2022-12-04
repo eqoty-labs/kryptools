@@ -11,7 +11,6 @@
 
 package io.eqoty.kryptools.axlsign
 
-import com.ionspin.kotlin.crypto.util.LibsodiumRandom
 import kotlin.math.floor
 
 
@@ -1241,16 +1240,6 @@ object AxlSign {
 
         return Keys(pk, sk)
 
-    }
-
-    fun randomBytes(size: Int): IntArray {
-        val High: Int = 255
-        val Low: Int = 0
-        val seed = IntArray(size)
-        for (i in 0..seed.size - 1) {
-            seed[i] = LibsodiumRandom.uniform((High - Low).toUInt()).toInt() + Low
-        }
-        return seed
     }
 
 }
