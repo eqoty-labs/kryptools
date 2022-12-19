@@ -23,8 +23,8 @@ class Curve25519Test {
     fun String.toIntArray(): IntArray {
         val ca = this.toCharArray()
         val re = IntArray(ca.size)
-        for (i in 0..ca.size - 1) {
-            re[i] = ca[i].toInt()
+        for (i in ca.indices) {
+            re[i] = ca[i].code
         }
         return re
     }
@@ -131,7 +131,7 @@ class Curve25519Test {
     }
 
     @Test
-    fun should_calculate_key_agreemen() {
+    fun should_calculate_key_agreement() {
         val seed1 = axlsign.randomBytes(32)
         val seed2 = axlsign.randomBytes(32)
 

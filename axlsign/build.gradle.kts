@@ -38,7 +38,13 @@ kotlin {
         withJava()
     }
     js(IR) {
-        browser()
+        browser {
+            testTask {
+                useMocha {
+                    timeout = "4s"
+                }
+            }
+        }
         nodejs()
     }
     for (target in Targets.nativeTargets) {
