@@ -12,6 +12,7 @@
 package io.eqoty.kryptools.axlsign
 
 import kotlin.math.floor
+import kotlin.random.Random
 
 
 // *** R val _0 = IntArray(16)
@@ -1134,7 +1135,7 @@ private fun curve25519_sign_open(m: IntArray, sm: IntArray, n: Int, pk: IntArray
 }
 
 // Class
-object AxlSign {
+class AxlSign {
 
     fun sharedKey(secretKey: IntArray, publicKey: IntArray): IntArray {
         val sharedKey = IntArray(32)
@@ -1240,6 +1241,18 @@ object AxlSign {
 
         return Keys(pk, sk)
 
+    }
+
+
+    fun randomBytes(size: Int): IntArray {
+        val High: Int = 255
+        val Low: Int = 0
+        val seed = IntArray(size)
+        val rnd = Random
+        for (i in 0..seed.size - 1) {
+            seed[i] = rnd.nextInt(High - Low) + Low
+        }
+        return seed
     }
 
 }
