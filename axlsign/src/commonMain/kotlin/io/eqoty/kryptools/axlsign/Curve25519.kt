@@ -13,9 +13,9 @@ abstract class Curve25519 {
 
 
     protected fun reduce(r: UIntArray) {
-        val x = UIntArray(64)
+        val x = IntArray(64)
         for (i in 0..63) {
-            x[i] = r[i]
+            x[i] = r[i].toInt()
         }
         for (i in 0..63) {
             r[i] = 0u
@@ -23,29 +23,29 @@ abstract class Curve25519 {
         modL(r, x)
     }
 
-    protected fun modL(r: UIntArray, x: UIntArray) {
+    protected fun modL(r: UIntArray, x: IntArray) {
 
-        var carry: UInt
+        var carry: Int
 
         for (i in 63 downTo 32) {
-            carry = 0u
+            carry = 0
             var j = i - 32
             val k = i - 12
             while (j < k) {
-                x[j] += carry - 16u * x[i] * L[j - (i - 32)]
-                carry = (x[j] + 128u) shr 8
-                x[j] -= carry * 256u
+                x[j] += carry - 16 * x[i] * L[j - (i - 32)]
+                carry = (x[j] + 128) shr 8
+                x[j] -= carry * 256
                 ++j
             }
             x[j] += carry
-            x[i] = 0u
+            x[i] = 0
         }
 
-        carry = 0u
+        carry = 0
         for (j in 0..31) {
             x[j] += carry - (x[31] shr 4) * L[j]
             carry = x[j] shr 8
-            x[j] = x[j] and 255u
+            x[j] = x[j] and 255
         }
 
         for (j in 0..31) {
@@ -54,7 +54,7 @@ abstract class Curve25519 {
 
         for (i in 0..31) {
             x[i + 1] += x[i] shr 8
-            r[i] = x[i] and 255u
+            r[i] = (x[i] and 255).toUInt()
         }
 
     }
@@ -645,7 +645,7 @@ class Curve25519Long : Curve25519() {
     fun crypto_sign_direct_rnd(sm: UIntArray, m: UIntArray, n: Int, sk: UIntArray, rnd: UIntArray): Int {
         val h = UIntArray(64)
         val r = UIntArray(64)
-        val x = UIntArray(64)
+        val x = IntArray(64)
         val p = arrayOf(gf(), gf(), gf(), gf())
 
         // Hash separation.
@@ -687,16 +687,16 @@ class Curve25519Long : Curve25519() {
         }
 
         for (i in 0..63) {
-            x[i] = 0u
+            x[i] = 0
         }
 
         for (i in 0..31) {
-            x[i] = r[i]
+            x[i] = r[i].toInt()
         }
 
         for (i in 0..31) {
             for (j in 0..31) {
-                x[i + j] += h[i] * sk[j]
+                x[i + j] += (h[i] * sk[j]).toInt()
             }
         }
 
@@ -714,7 +714,7 @@ class Curve25519Long : Curve25519() {
     private fun crypto_sign_direct(sm: UIntArray, m: UIntArray, n: Int, sk: UIntArray): Int {
         val h = UIntArray(64)
         val r = UIntArray(64)
-        val x = UIntArray(64)
+        val x = IntArray(64)
         val p = arrayOf(gf(), gf(), gf(), gf())
 
         for (i in 0..n - 1) {
@@ -741,16 +741,16 @@ class Curve25519Long : Curve25519() {
         reduce(h)
 
         for (i in 0..63) {
-            x[i] = 0u
+            x[i] = 0
         }
 
         for (i in 0..31) {
-            x[i] = r[i]
+            x[i] = r[i].toInt()
         }
 
         for (i in 0..31) {
             for (j in 0..31) {
-                x[i + j] += h[i] * sk[j]
+                x[i + j] += (h[i] * sk[j]).toInt()
             }
         }
 

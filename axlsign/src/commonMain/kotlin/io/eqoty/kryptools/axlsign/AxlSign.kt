@@ -262,8 +262,8 @@ fun crypto_hashblocks_hl(hh: UIntArray, hl: UIntArray, m: UIntArray, _n: Int): I
 
 
 fun crypto_hash(out: UIntArray, m: UIntArray, _n: Int): Int {
-    val hh = _HH
-    val hl = _HL
+    val hh = _HH.copyOf()
+    val hl = _HL.copyOf()
     val x = UIntArray(256)
     var n = _n
     val b = n
