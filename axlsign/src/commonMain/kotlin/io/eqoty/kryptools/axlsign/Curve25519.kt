@@ -14,9 +14,7 @@ abstract class Curve25519 {
 
     protected fun reduce(r: UIntArray) {
         val x = IntArray(64)
-        for (i in 0..63) {
-            x[i] = r[i].toInt()
-        }
+        r.copyInto(x.asUIntArray(), 0, 0, 64)
         for (i in 0..63) {
             r[i] = 0u
         }
@@ -599,9 +597,8 @@ class Curve25519Long : Curve25519() {
         val m = gf()
         val t = gf()
 
-        for (i in 0..15) {
-            t[i] = n[i]
-        }
+        n.copyInto(t, 0, 0, 16)
+
         car25519(t)
         car25519(t)
         car25519(t)
@@ -655,28 +652,20 @@ class Curve25519Long : Curve25519() {
         }
 
         // Secret key.
-        for (i in 0..31) {
-            sm[32 + i] = sk[i]
-        }
+        sk.copyInto(sm, 32, 0, 32)
 
         // Message.
-        for (i in 0..n - 1) {
-            sm[64 + i] = m[i]
-        }
+        m.copyInto(sm, 64, 0, n)
 
         // Random suffix.
-        for (i in 0..63) {
-            sm[n + 64 + i] = rnd[i]
-        }
+        rnd.copyInto(sm, n + 64, 0, 64)
 
         crypto_hash(r, sm, n + 128)
         reduce(r)
         scalarbase(p, r)
         pack(sm, p)
 
-        for (i in 0..31) {
-            sm[i + 32] = sk[32 + i]
-        }
+        sk.copyInto(sm, 32, 32, 64)
 
         crypto_hash(h, sm, n + 64)
         reduce(h)
@@ -690,9 +679,7 @@ class Curve25519Long : Curve25519() {
             x[i] = 0
         }
 
-        for (i in 0..31) {
-            x[i] = r[i].toInt()
-        }
+        r.asIntArray().copyInto(x, 0, 0, 32)
 
         for (i in 0..31) {
             for (j in 0..31) {
@@ -702,9 +689,7 @@ class Curve25519Long : Curve25519() {
 
         val tmp = sm.copyOfRange(32, n + 64)
         modL(tmp, x)
-        for (i in 0 until tmp.size) {
-            sm[32 + i] = tmp[i]
-        }
+        tmp.copyInto(sm, 32)
 
         return n + 64
     }
@@ -717,13 +702,9 @@ class Curve25519Long : Curve25519() {
         val x = IntArray(64)
         val p = arrayOf(gf(), gf(), gf(), gf())
 
-        for (i in 0..n - 1) {
-            sm[64 + i] = m[i]
-        }
+        m.copyInto(sm, 64, 0, n)
 
-        for (i in 0..31) {
-            sm[32 + i] = sk[i]
-        }
+        sk.copyInto(sm, 32, 0, 32)
 
         crypto_hash(r, sm.copyOfRange(32, sm.size), n + 32)
 
@@ -733,9 +714,7 @@ class Curve25519Long : Curve25519() {
 
         pack(sm, p)
 
-        for (i in 0..31) {
-            sm[i + 32] = sk[32 + i]
-        }
+        sk.copyInto(sm, 32, 32, 64)
 
         crypto_hash(h, sm, n + 64)
         reduce(h)
@@ -744,9 +723,7 @@ class Curve25519Long : Curve25519() {
             x[i] = 0
         }
 
-        for (i in 0..31) {
-            x[i] = r[i].toInt()
-        }
+        r.asIntArray().copyInto(x, 0, 0, 32)
 
         for (i in 0..31) {
             for (j in 0..31) {
@@ -756,9 +733,7 @@ class Curve25519Long : Curve25519() {
 
         val tmp = sm.copyOfRange(32, sm.size)
         modL(tmp, x)
-        for (i in 0 until tmp.size) {
-            sm[32 + i] = tmp[i]
-        }
+        tmp.copyInto(sm, 32)
 
         return n + 64
 
