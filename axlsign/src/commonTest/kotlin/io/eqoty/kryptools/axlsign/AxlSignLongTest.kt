@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 
-class Curve25519Test {
+class AxlSignLongTest {
     private val axlsign = AxlSignLong()
 
     fun IntArray.toHex(): String {
