@@ -5,8 +5,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 
-class Curve25519Test {
-    private val axlsign = AxlSign()
+class AxlSignLongTest {
+    private val axlsign = AxlSignLong()
 
     fun IntArray.toHex(): String {
         var s: String = ""
@@ -23,8 +23,8 @@ class Curve25519Test {
     fun String.toIntArray(): IntArray {
         val ca = this.toCharArray()
         val re = IntArray(ca.size)
-        for (i in 0..ca.size - 1) {
-            re[i] = ca[i].toInt()
+        for (i in ca.indices) {
+            re[i] = ca[i].code
         }
         return re
     }
@@ -95,14 +95,14 @@ class Curve25519Test {
         val msg = intArrayOf(1, 2, 3, 4, 5)
         val sig = axlsign.sign(keys.privateKey, msg, null)
 
-        assertEquals(axlsign.verify(keys.publicKey, msg, sig), 1)
+        assertEquals(1, axlsign.verify(keys.publicKey, msg, sig))
 
         sig[0] = sig[0] xor sig[0]
         sig[1] = sig[1] xor sig[1]
         sig[2] = sig[2] xor sig[2]
         sig[3] = sig[3] xor sig[3]
 
-        assertEquals(axlsign.verify(keys.publicKey, msg, sig), 0)
+        assertEquals(0, axlsign.verify(keys.publicKey, msg, sig), )
     }
 
     @Test
@@ -127,11 +127,11 @@ class Curve25519Test {
         val signedMsg = axlsign.signMessage(keys.privateKey, msg.toIntArray(), null)
 
         assertEquals(signedMsg.size, msg.length + 64) // *** R
-        assertEquals(axlsign.openMessageStr(keys.publicKey, signedMsg), msg)
+        assertEquals(msg, axlsign.openMessageStr(keys.publicKey, signedMsg))
     }
 
     @Test
-    fun should_calculate_key_agreemen() {
+    fun should_calculate_key_agreement() {
         val seed1 = axlsign.randomBytes(32)
         val seed2 = axlsign.randomBytes(32)
 
