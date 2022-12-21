@@ -6,7 +6,7 @@ import kotlin.test.assertNotEquals
 
 
 class Curve25519Test {
-    private val axlsign = AxlSign()
+    private val axlsign = AxlSignLong()
 
     fun IntArray.toHex(): String {
         var s: String = ""
@@ -41,12 +41,12 @@ class Curve25519Test {
     fun should_sign_and_verify() {
         val seed = axlsign.randomBytes(32)
         val keys = axlsign.generateKeyPair(seed)
-        val msg = intArrayOf(1, 2, 3, 4, 5)
+        val msg = intArrayOf(1, 2, 3, 4, 5).asUIntArray()
         val sig = axlsign.sign(keys.privateKey, msg, null)
 
-        println("secret: " + keys.privateKey.toHex())
-        println("public:" + keys.publicKey.toHex())
-        println("signat: " + sig.toHex())
+        println("secret: " + keys.privateKey.asIntArray().toHex())
+        println("public:" + keys.publicKey.asIntArray().toHex())
+        println("signat: " + sig.asIntArray().toHex())
 
         assertEquals(sig.size, 64)
         assertEquals(axlsign.verify(keys.publicKey, msg, sig), 1)
@@ -56,24 +56,24 @@ class Curve25519Test {
     fun should_generate_deterministic_signatures_if_not_randomized() {
         val seed = axlsign.randomBytes(32)
         val keys = axlsign.generateKeyPair(seed)
-        val msg = intArrayOf(1, 2, 3, 4, 5)
+        val msg = intArrayOf(1, 2, 3, 4, 5).asUIntArray()
         val sig1 = axlsign.sign(keys.privateKey, msg, null)
         val sig2 = axlsign.sign(keys.privateKey, msg, null)
-        assertEquals(sig1.toHex(), sig2.toHex())
+        assertEquals(sig1.asIntArray().toHex(), sig2.asIntArray().toHex())
     }
 
     @Test
     fun should_generate_different_signatures_if_randomized() {
         val seed = axlsign.randomBytes(32)
         val keys = axlsign.generateKeyPair(seed)
-        val msg = intArrayOf(1, 2, 3, 4, 5)
+        val msg = intArrayOf(1, 2, 3, 4, 5).asUIntArray()
         val sig0 = axlsign.sign(keys.privateKey, msg, null) // not randomized
         val sig1 = axlsign.sign(keys.privateKey, msg, axlsign.randomBytes(64))
         val sig2 = axlsign.sign(keys.privateKey, msg, axlsign.randomBytes(64))
 
-        assertNotEquals(sig1.toHex(), sig2.toHex())
-        assertNotEquals(sig0.toHex(), sig1.toHex())
-        assertNotEquals(sig0.toHex(), sig2.toHex())
+        assertNotEquals(sig1.asIntArray().toHex(), sig2.asIntArray().toHex())
+        assertNotEquals(sig0.asIntArray().toHex(), sig1.asIntArray().toHex())
+        assertNotEquals(sig0.asIntArray().toHex(), sig2.asIntArray().toHex())
     }
 
     @Test
@@ -81,7 +81,7 @@ class Curve25519Test {
         val seed = axlsign.randomBytes(32)
         val random = axlsign.randomBytes(64)
         val keys = axlsign.generateKeyPair(seed)
-        val msg = intArrayOf(1, 2, 3, 4, 5)
+        val msg = intArrayOf(1, 2, 3, 4, 5).asUIntArray()
         val sig = axlsign.sign(keys.privateKey, msg, random)
 
         assertEquals(sig.size, 64)
@@ -92,29 +92,29 @@ class Curve25519Test {
     fun should_not_verify_bad_signature() {
         val seed = axlsign.randomBytes(32)
         val keys = axlsign.generateKeyPair(seed)
-        val msg = intArrayOf(1, 2, 3, 4, 5)
+        val msg = intArrayOf(1, 2, 3, 4, 5).asUIntArray()
         val sig = axlsign.sign(keys.privateKey, msg, null)
 
-        assertEquals(axlsign.verify(keys.publicKey, msg, sig), 1)
+        assertEquals(1, axlsign.verify(keys.publicKey, msg, sig))
 
         sig[0] = sig[0] xor sig[0]
         sig[1] = sig[1] xor sig[1]
         sig[2] = sig[2] xor sig[2]
         sig[3] = sig[3] xor sig[3]
 
-        assertEquals(axlsign.verify(keys.publicKey, msg, sig), 0)
+        assertEquals(0, axlsign.verify(keys.publicKey, msg, sig), )
     }
 
     @Test
     fun should_not_verify_bad_message() {
         val seed = axlsign.randomBytes(32)
         val keys = axlsign.generateKeyPair(seed)
-        var msg = intArrayOf(1, 2, 3, 4, 5)
+        var msg = intArrayOf(1, 2, 3, 4, 5).asUIntArray()
         val sig = axlsign.sign(keys.privateKey, msg, null)
 
         assertEquals(axlsign.verify(keys.publicKey, msg, sig), 1)
 
-        msg = intArrayOf(1, 2, 3, 4)
+        msg = intArrayOf(1, 2, 3, 4).asUIntArray()
 
         assertEquals(axlsign.verify(keys.publicKey, msg, sig), 0)
     }
@@ -124,10 +124,10 @@ class Curve25519Test {
         val seed = axlsign.randomBytes(32)
         val keys = axlsign.generateKeyPair(seed)
         val msg = "lo esencial es invisible a los ojos"
-        val signedMsg = axlsign.signMessage(keys.privateKey, msg.toIntArray(), null)
+        val signedMsg = axlsign.signMessage(keys.privateKey, msg.toIntArray().asUIntArray(), null)
 
         assertEquals(signedMsg.size, msg.length + 64) // *** R
-        assertEquals(axlsign.openMessageStr(keys.publicKey, signedMsg), msg)
+        assertEquals(msg, axlsign.openMessageStr(keys.publicKey, signedMsg))
     }
 
     @Test
@@ -141,7 +141,7 @@ class Curve25519Test {
         val sk1 = axlsign.sharedKey(k2.privateKey, k1.publicKey)
         val sk2 = axlsign.sharedKey(k1.privateKey, k2.publicKey)
 
-        assertEquals(sk1.toHex(), sk2.toHex())
+        assertEquals(sk1.asIntArray().toHex(), sk2.asIntArray().toHex())
     }
 
 

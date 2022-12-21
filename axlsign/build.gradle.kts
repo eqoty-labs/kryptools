@@ -52,6 +52,9 @@ kotlin {
     }
 
     sourceSets {
+        all {
+            languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

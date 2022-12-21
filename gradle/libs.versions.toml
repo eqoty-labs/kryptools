@@ -9,7 +9,11 @@ com-vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.re
 [versions]
 
 kotlin = "1.7.20"
+##  ⬆ = "1.7.21"
+##  ⬆ = "1.7.22"
 ##  ⬆ = "1.7.255-SNAPSHOT"
+##  ⬆ = "1.8.0-Beta"
+##  ⬆ = "1.8.0-RC"
 ##  ⬆ = "1.8.255-SNAPSHOT"
 
 vanniktech-publish = "0.21.0"
