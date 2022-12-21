@@ -3,25 +3,25 @@ package io.eqoty.kryptools.axlsign
 import kotlin.math.floor
 
 abstract class Curve25519 {
-    abstract fun sign(sm: UIntArray, m: UIntArray, n: Int, sk: UIntArray, opt_rnd: UIntArray?): Int
-    abstract fun sign_open(m: UIntArray, sm: UIntArray, n: Int, pk: UIntArray): Int
+    abstract fun sign(sm: IntArray, m: IntArray, n: Int, sk: IntArray, opt_rnd: IntArray?): Int
+    abstract fun sign_open(m: IntArray, sm: IntArray, n: Int, pk: IntArray): Int
 
-    abstract fun crypto_scalarmult(q: UIntArray, n: UIntArray, p: UIntArray): Int
-    fun crypto_scalarmult_base(q: UIntArray, n: UIntArray): Int {
+    abstract fun crypto_scalarmult(q: IntArray, n: IntArray, p: IntArray): Int
+    fun crypto_scalarmult_base(q: IntArray, n: IntArray): Int {
         return crypto_scalarmult(q, n, _9)
     }
 
 
-    protected fun reduce(r: UIntArray) {
+    protected fun reduce(r: IntArray) {
         val x = IntArray(64)
-        r.copyInto(x.asUIntArray(), 0, 0, 64)
+        r.copyInto(x, 0, 0, 64)
         for (i in 0..63) {
-            r[i] = 0u
+            r[i] = 0
         }
         modL(r, x)
     }
 
-    protected fun modL(r: UIntArray, x: IntArray) {
+    protected fun modL(r: IntArray, x: IntArray) {
 
         var carry: Int
 
@@ -52,7 +52,7 @@ abstract class Curve25519 {
 
         for (i in 0..31) {
             x[i + 1] += x[i] shr 8
-            r[i] = (x[i] and 255).toUInt()
+            r[i] = x[i] and 255
         }
 
     }
@@ -116,12 +116,12 @@ class Curve25519Long : Curve25519() {
         return init.copyOf(16)
     }
 
-    override fun sign(sm: UIntArray, m: UIntArray, n: Int, sk: UIntArray, opt_rnd: UIntArray?): Int {
+    override fun sign(sm: IntArray, m: IntArray, n: Int, sk: IntArray, opt_rnd: IntArray?): Int {
         // If opt_rnd is provided, sm must have n + 128,
         // otherwise it must have n + 64 bytes.
 
         // Convert Curve25519 secret key into Ed25519 secret key (includes pub key).
-        val edsk = UIntArray(64)
+        val edsk = IntArray(64)
         val p = arrayOf(gf(), gf(), gf(), gf())
 
         for (i in 0..31) {
@@ -129,9 +129,9 @@ class Curve25519Long : Curve25519() {
         }
 
         // Ensure private key is in the correct format.
-        edsk[0] = edsk[0] and 248u
-        edsk[31] = edsk[31] and 127u
-        edsk[31] = edsk[31] or 64u
+        edsk[0] = edsk[0] and 248
+        edsk[31] = edsk[31] and 127
+        edsk[31] = edsk[31] or 64
 
         scalarbase(p, edsk)
 
@@ -142,7 +142,7 @@ class Curve25519Long : Curve25519() {
         }
 
         // Remember sign bit.
-        val signBit = edsk[63] and 128u
+        val signBit = edsk[63] and 128
         val smlen: Int
 
         if (opt_rnd != null) {
@@ -156,24 +156,24 @@ class Curve25519Long : Curve25519() {
         return smlen
     }
 
-    override fun sign_open(m: UIntArray, sm: UIntArray, n: Int, pk: UIntArray): Int {
+    override fun sign_open(m: IntArray, sm: IntArray, n: Int, pk: IntArray): Int {
         // Convert Curve25519 public key into Ed25519 public key.
         val edpk = convertPublicKey(pk)
 
         // Restore sign bit from signature.
-        edpk[31] = edpk[31] or (sm[63] and 128u)
+        edpk[31] = edpk[31] or (sm[63] and 128)
 
         // Remove sign bit from signature.
-        sm[63] = sm[63] and 127u
+        sm[63] = sm[63] and 127
 
         // Verify signed message.
         return crypto_sign_open(m, sm, n, edpk)
     }
 
-    override fun crypto_scalarmult(q: UIntArray, n: UIntArray, p: UIntArray): Int {
-        val z = UIntArray(32)
+    override fun crypto_scalarmult(q: IntArray, n: IntArray, p: IntArray): Int {
+        val z = IntArray(32)
         val x = LongArray(80)
-        var r: UInt
+        var r: Int
 
         val a = gf()
         val b = gf()
@@ -185,8 +185,8 @@ class Curve25519Long : Curve25519() {
         for (i in 0..30) {
             z[i] = n[i]
         }
-        z[31] = (n[31] and 127u) or 64u
-        z[0] = z[0] and 248u
+        z[31] = (n[31] and 127) or 64
+        z[0] = z[0] and 248
 
         unpack25519(x, p)
 
@@ -201,7 +201,7 @@ class Curve25519Long : Curve25519() {
 
         for (i in 254 downTo 0) {
 
-            r = (z[i ushr 3] shr (i and 7)) and 1u
+            r = (z[i ushr 3] shr (i and 7)) and 1
 
             sel25519(a, b, r)
             sel25519(c, d, r)
@@ -250,8 +250,8 @@ class Curve25519Long : Curve25519() {
 
     // Converts Curve25519 public key back to Ed25519 public key.
     // edwardsY = (montgomeryX - 1) / (montgomeryX + 1)
-    private fun convertPublicKey(pk: UIntArray): UIntArray {
-        val z = UIntArray(32)
+    private fun convertPublicKey(pk: IntArray): IntArray {
+        val z = IntArray(32)
         val x = gf()
         val a = gf()
         val b = gf()
@@ -267,9 +267,9 @@ class Curve25519Long : Curve25519() {
         return z
     }
 
-    private fun crypto_sign_open(m: UIntArray, sm: UIntArray, _n: Int, pk: UIntArray): Int {
-        val t = UIntArray(32)
-        val h = UIntArray(64)
+    private fun crypto_sign_open(m: IntArray, sm: IntArray, _n: Int, pk: IntArray): Int {
+        val t = IntArray(32)
+        val h = IntArray(64)
         val p = arrayOf(gf(), gf(), gf(), gf())
         val q = arrayOf(gf(), gf(), gf(), gf())
         var n = _n
@@ -302,7 +302,7 @@ class Curve25519Long : Curve25519() {
         n -= 64
         if (crypto_verify_32(sm, 0, t, 0) != 0) {
             for (i in 0 until n) {
-                m[i] = 0u
+                m[i] = 0
             }
             return -1
         }
@@ -316,7 +316,7 @@ class Curve25519Long : Curve25519() {
 
     }
 
-    private fun unpackneg(r: Array<LongArray>, p: UIntArray): Int {
+    private fun unpackneg(r: Array<LongArray>, p: IntArray): Int {
         val t = gf()
         val chk = gf()
         val num = gf()
@@ -385,35 +385,35 @@ class Curve25519Long : Curve25519() {
     }
 
     private fun neq25519(a: LongArray, b: LongArray): Int {
-        val c = UIntArray(32)
-        val d = UIntArray(32)
+        val c = IntArray(32)
+        val d = IntArray(32)
         pack25519(c, a)
         pack25519(d, b)
         return crypto_verify_32(c, 0, d, 0)
     }
 
-    private fun vn(x: UIntArray, xi: Int, y: UIntArray, yi: Int, n: Int): Int {
-        var d = 0u
+    private fun vn(x: IntArray, xi: Int, y: IntArray, yi: Int, n: Int): Int {
+        var d = 0
         for (i in 0..n - 1) {
             d = d or (x[xi + i] xor y[yi + i])
         }
-        return ((1u and ((d - 1u) shr 8)) - 1u).toInt()
+        return (1 and ((d - 1) shr 8)) - 1
     }
 
-    private fun crypto_verify_32(x: UIntArray, xi: Int, y: UIntArray, yi: Int): Int {
+    private fun crypto_verify_32(x: IntArray, xi: Int, y: IntArray, yi: Int): Int {
         return vn(x, xi, y, yi, 32)
     }
 
 
-    private fun unpack25519(o: LongArray, n: UIntArray) {
+    private fun unpack25519(o: LongArray, n: IntArray) {
         for (i in 0..15) {
-            val value: UInt = n[2 * i] + (n[2 * i + 1] shl 8)
+            val value: Int = n[2 * i] + (n[2 * i + 1] shl 8)
             o[i] = value.toLong()
         }
         o[15] = o[15] and 0x7fff
     }
 
-    private fun scalarbase(p: Array<LongArray>, s: UIntArray) {
+    private fun scalarbase(p: Array<LongArray>, s: IntArray) {
         val q = arrayOf(gf(), gf(), gf(), gf())
         set25519(q[0], X)
         set25519(q[1], Y)
@@ -475,8 +475,8 @@ class Curve25519Long : Curve25519() {
 
     }
 
-    private fun scalarmult(p: Array<LongArray>, q: Array<LongArray>, s: UIntArray) {
-        var b: UInt
+    private fun scalarmult(p: Array<LongArray>, q: Array<LongArray>, s: IntArray) {
+        var b: Int
 
         set25519(p[0], gf0)
         set25519(p[1], gf1)
@@ -484,7 +484,7 @@ class Curve25519Long : Curve25519() {
         set25519(p[3], gf0)
 
         for (i in 255 downTo 0) {
-            b = (s[(i / 8) or 0] shr (i and 7)) and 1u
+            b = (s[(i / 8) or 0] shr (i and 7)) and 1
             cswap(p, q, b)
             add(q, p)
             add(p, p)
@@ -493,15 +493,15 @@ class Curve25519Long : Curve25519() {
     }
 
 
-    private fun cswap(p: Array<LongArray>, q: Array<LongArray>, b: UInt) {
+    private fun cswap(p: Array<LongArray>, q: Array<LongArray>, b: Int) {
         for (i in 0..3) {
             sel25519(p[i], q[i], b)
         }
     }
 
-    private fun sel25519(p: LongArray, q: LongArray, b: UInt) {
+    private fun sel25519(p: LongArray, q: LongArray, b: Int) {
         var t: Long
-        val invb = (b - 1u).inv()
+        val invb = (b - 1).inv()
         val c: Long = invb.toLong()
         for (i in 0..15) {
             t = c and (p[i] xor q[i])
@@ -555,7 +555,7 @@ class Curve25519Long : Curve25519() {
         }
     }
 
-    private fun pack(r: UIntArray, p: Array<LongArray>) {
+    private fun pack(r: IntArray, p: Array<LongArray>) {
         val tx = gf()
         val ty = gf()
         val zi = gf()
@@ -592,7 +592,7 @@ class Curve25519Long : Curve25519() {
         M(o, a, a)
     }
 
-    private fun pack25519(o: UIntArray, n: LongArray) {
+    private fun pack25519(o: IntArray, n: LongArray) {
         var b: Long
         val m = gf()
         val t = gf()
@@ -612,11 +612,11 @@ class Curve25519Long : Curve25519() {
             m[15] = t[15] - 0x7fff - ((m[14] shr 16) and 1)
             b = (m[15] shr 16) and 1
             m[14] = m[14] and 0xffff
-            sel25519(t, m, 1u - b.toUInt())
+            sel25519(t, m, 1 - b.toInt())
         }
         for (i in 0..15) {
-            o[2 * i] = (t[i]).toUInt() and 255u /*0xff*/
-            o[2 * i + 1] = (t[i]).toUInt() shr 8
+            o[2 * i] = (t[i]).toInt() and 0xff
+            o[2 * i + 1] = (t[i]).toInt() shr 8
         }
     }
 
@@ -631,24 +631,24 @@ class Curve25519Long : Curve25519() {
         o[0] += c - 1 + 37 * (c - 1)
     }
 
-    private fun par25519(a: LongArray): UInt {
-        val d = UIntArray(32)
+    private fun par25519(a: LongArray): Int {
+        val d = IntArray(32)
         pack25519(d, a)
-        return d[0] and 1u
+        return d[0] and 1
     }
 
 
     // Note: sm must be n+128.
-    fun crypto_sign_direct_rnd(sm: UIntArray, m: UIntArray, n: Int, sk: UIntArray, rnd: UIntArray): Int {
-        val h = UIntArray(64)
-        val r = UIntArray(64)
+    fun crypto_sign_direct_rnd(sm: IntArray, m: IntArray, n: Int, sk: IntArray, rnd: IntArray): Int {
+        val h = IntArray(64)
+        val r = IntArray(64)
         val x = IntArray(64)
         val p = arrayOf(gf(), gf(), gf(), gf())
 
         // Hash separation.
-        sm[0] = 254u /*0xfe*/
+        sm[0] = 0xfe
         for (i in 1..31) {
-            sm[i] = 255u /*0xff*/
+            sm[i] = 0xff
         }
 
         // Secret key.
@@ -672,14 +672,14 @@ class Curve25519Long : Curve25519() {
 
         // Wipe out random suffix.
         for (i in 0..63) {
-            sm[n + 64 + i] = 0u
+            sm[n + 64 + i] = 0
         }
 
         for (i in 0..63) {
             x[i] = 0
         }
 
-        r.asIntArray().copyInto(x, 0, 0, 32)
+        r.copyInto(x, 0, 0, 32)
 
         for (i in 0..31) {
             for (j in 0..31) {
@@ -696,9 +696,9 @@ class Curve25519Long : Curve25519() {
 
 
     // Like crypto_sign, but uses secret key directly in hash.
-    private fun crypto_sign_direct(sm: UIntArray, m: UIntArray, n: Int, sk: UIntArray): Int {
-        val h = UIntArray(64)
-        val r = UIntArray(64)
+    private fun crypto_sign_direct(sm: IntArray, m: IntArray, n: Int, sk: IntArray): Int {
+        val h = IntArray(64)
+        val r = IntArray(64)
         val x = IntArray(64)
         val p = arrayOf(gf(), gf(), gf(), gf())
 
@@ -723,7 +723,7 @@ class Curve25519Long : Curve25519() {
             x[i] = 0
         }
 
-        r.asIntArray().copyInto(x, 0, 0, 32)
+        r.copyInto(x, 0, 0, 32)
 
         for (i in 0..31) {
             for (j in 0..31) {
