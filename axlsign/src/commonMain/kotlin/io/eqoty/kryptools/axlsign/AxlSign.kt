@@ -310,7 +310,7 @@ private fun ts64(x: IntArray, i: Int, h: Int, l: Int) {
 
 abstract class AxlSign {
 
-    abstract val curve25519: Curve25519Long
+    abstract val curve25519: Curve25519
 
     fun sharedKey(secretKey: IntArray, publicKey: IntArray): IntArray {
         val sharedKey = IntArray(32)
