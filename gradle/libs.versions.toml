@@ -8,19 +8,18 @@ com-vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.re
 
 [versions]
 
-kotlin = "1.7.20"
-##  ⬆ = "1.7.21"
-##  ⬆ = "1.7.22"
-##  ⬆ = "1.7.255-SNAPSHOT"
-##  ⬆ = "1.8.0-Beta"
-##  ⬆ = "1.8.0-RC"
+kotlin = "1.8.0"
 ##  ⬆ = "1.8.255-SNAPSHOT"
 
 vanniktech-publish = "0.21.0"
 ##              ⬆ = "0.22.0-SNAPSHOT"
 ##              ⬆ = "0.22.0"
 ##              ⬆ = "0.23.0-SNAPSHOT"
-okio = "3.2.0"
+##              ⬆ = "0.23.0"
+##              ⬆ = "0.23.1"
+##              ⬆ = "0.23.2-SNAPSHOT"
+##              ⬆ = "0.24.0-SNAPSHOT"
+okio = "3.3.0"
 kotlinx-serialization = "1.4.1"
 kotlinx-coroutines = "1.6.4"
 
