@@ -27,7 +27,7 @@ object Targets {
     )
     val darwinTargets = iosTargets + watchosTargets + tvosTargets + macosTargets
     val linuxTargets = arrayOf("linuxArm64", "linuxX64")
-    val mingwTargets = arrayOf("mingwX64", "mingwX86")
+    val mingwTargets = arrayOf("mingwX64")
     val nativeTargets = linuxTargets + darwinTargets + mingwTargets
 
 }
@@ -68,10 +68,9 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
     dependsOn(dependsOnTasks)
 }
 
-plugins.withId("com.vanniktech.maven.publish.base") {
+plugins.withId("com.vanniktech.maven.publish") {
     mavenPublishing {
         publishToMavenCentral(SonatypeHost.S01)
         signAllPublications()
-        pomFromGradleProperties()
     }
 }

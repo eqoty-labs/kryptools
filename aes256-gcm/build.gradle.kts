@@ -16,7 +16,7 @@ object Targets {
         "iosArm64", "iosX64", "iosSimulatorArm64",
     )
     val watchosTargets = arrayOf(
-        "watchosArm64", "watchosX86", "watchosDeviceArm64", "watchosX64", "watchosSimulatorArm64",
+        "watchosArm64", "watchosDeviceArm64", "watchosX64", "watchosSimulatorArm64",
     )
     val tvosTargets = arrayOf(
         "tvosArm64", "tvosX64", "tvosSimulatorArm64"
@@ -26,7 +26,7 @@ object Targets {
     )
     val darwinTargets = iosTargets + watchosTargets + tvosTargets + macosTargets
     val linuxTargets = arrayOf<String>()//("linuxArm64", "linuxX64")
-    val mingwTargets = arrayOf<String>()//("mingwX64", "mingwX86")
+    val mingwTargets = arrayOf<String>()//("mingwX64",)
     val nativeTargets = linuxTargets + darwinTargets + mingwTargets
 
 }
@@ -100,10 +100,9 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
     dependsOn(dependsOnTasks)
 }
 
-plugins.withId("com.vanniktech.maven.publish.base") {
+plugins.withId("com.vanniktech.maven.publish") {
     mavenPublishing {
         publishToMavenCentral(SonatypeHost.S01)
         signAllPublications()
-        pomFromGradleProperties()
     }
 }
