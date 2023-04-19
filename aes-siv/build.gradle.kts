@@ -31,7 +31,6 @@ kotlin {
         compilations.all {
             kotlinOptions.jvmTarget = "11"
         }
-        withJava()
     }
     js(IR) {
         browser {

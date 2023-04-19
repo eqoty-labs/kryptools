@@ -17,7 +17,7 @@ object Targets {
         "iosArm64", "iosX64", "iosSimulatorArm64",
     )
     val watchosTargets = arrayOf(
-        "watchosArm64", "watchosX86", "watchosX64", "watchosSimulatorArm64"
+        "watchosArm64", "watchosX64", "watchosSimulatorArm64"
     )
     val tvosTargets = arrayOf(
         "tvosArm64", "tvosX64", "tvosSimulatorArm64"
@@ -37,7 +37,6 @@ kotlin {
         compilations.all {
             kotlinOptions.jvmTarget = "11"
         }
-        withJava()
     }
     js(IR) {
         browser()
