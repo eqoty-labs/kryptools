@@ -39,7 +39,7 @@ sealed class Curve(val presetCurve: PresetCurve) {
     protected val _wnafT3 = Array<Array<Int>?>(4) { null }
     protected val _wnafT4 = Array<Int?>(4) { null }
 
-    protected val bitLength = if (this.n != null) this.n.bitLength() else 0u
+    protected val bitLength = if (this.n != null) this.n.bitLength().toUInt() else 0u
 }
 
 class ShortCurve(presetCurve: PresetCurve) : Curve(presetCurve) {

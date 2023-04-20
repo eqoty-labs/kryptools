@@ -31,7 +31,7 @@ sealed class BasePoint<C : Curve>(val curve: C, val type: String) {
     fun hasDoubles(k: BN): Boolean {
         val doubles = precomputed?.doubles ?: return false
 
-        return doubles.points.size >= ceil(((k.number.bitLength() + 1u) / doubles.step.toUInt()).toDouble())
+        return doubles.points.size >= ceil(((k.number.bitLength().toUInt() + 1u) / doubles.step.toUInt()).toDouble())
     }
 
     fun getNAFPoints(wnd: Int): ComputedNaf<C> {

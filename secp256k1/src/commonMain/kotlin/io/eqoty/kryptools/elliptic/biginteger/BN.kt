@@ -419,7 +419,7 @@ class MPrime(val name: String, val p: BN) {
             val tmp = split.second
             r = this.mulK(r)
             r = r.add(tmp)
-            rlen = r.bitLength()
+            rlen = r.bitLength().toULong()
         } while (rlen.toInt() > this.n)
         val cmp = if (rlen < n.toULong()) -1 else r.compareTo(this.p)
         if (cmp == 0) {
@@ -549,7 +549,7 @@ class Mont(m: BN) : Red(m) {
 
     val shift: ULong
         get() {
-            var tmpShift = this.m.number.bitLength()
+            var tmpShift = this.m.number.bitLength().toULong()
             if (tmpShift % 26u != 0.toULong()) {
                 tmpShift += 26u - (tmpShift % 26u)
             }
