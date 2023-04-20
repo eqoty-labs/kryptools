@@ -13,7 +13,7 @@ kotlin = "1.8.20"
 vanniktech-publish = "0.25.2"
 okio = "3.3.0"
 kotlinx-serialization = "1.5.0"
-kotlinx-coroutines = "1.7.0-RC"
+kotlinx-coroutines = "1.6.4"
 
 secretk = "0.1.2"
 
