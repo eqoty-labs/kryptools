@@ -15,8 +15,6 @@ okio = "3.3.0"
 kotlinx-serialization = "1.5.0"
 kotlinx-coroutines = "1.6.4"
 
-secretk = "0.1.2"
-
 bignum = "0.3.8"
 
 libsodium = "0.8.9"
