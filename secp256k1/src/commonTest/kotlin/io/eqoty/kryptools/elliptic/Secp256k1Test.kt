@@ -3,12 +3,9 @@ package io.eqoty.kryptools.elliptic
 import io.eqoty.kryptools.Secp256k1
 import io.eqoty.kryptools.toUByteArray
 import okio.ByteString.Companion.decodeHex
-import okio.ByteString.Companion.toByteString
-import kotlin.random.Random
-import kotlin.random.nextUBytes
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 
 class Secp256k1Test {
@@ -22,7 +19,8 @@ class Secp256k1Test {
 
         assertContentEquals(expectedUncompressed, uncompressed)
         val pubkeyCompressed = Secp256k1.compressPubkey(uncompressed)
-        val expectedCompressed = "03000d331e7ac60da03d489bedb76523a29998261a82d863f3892ff00642886c8b".decodeHex().toUByteArray()
+        val expectedCompressed =
+            "03000d331e7ac60da03d489bedb76523a29998261a82d863f3892ff00642886c8b".decodeHex().toUByteArray()
         assertContentEquals(expectedCompressed, pubkeyCompressed)
     }
 
@@ -36,9 +34,67 @@ class Secp256k1Test {
 
         assertContentEquals(expectedUncompressed, uncompressed)
         val pubkeyCompressed = Secp256k1.compressPubkey(uncompressed)
-        val expectedCompressed = "026a52ad443378103708bb89e828c972f58060c690d2aa65480eedb6f3f56b2057".decodeHex().toUByteArray()
+        val expectedCompressed =
+            "026a52ad443378103708bb89e828c972f58060c690d2aa65480eedb6f3f56b2057".decodeHex().toUByteArray()
         assertContentEquals(expectedCompressed, pubkeyCompressed)
     }
+
+
+    @Test
+    fun testInvalidPublicKey() {
+        // An invalid secp256k1 public key with wrong length
+        val invalidKey = "441dc75d1789d6c1b6e962ae83114c759a315b2c2dce6d8f6ed75c4d3e4e4c"
+
+        // Decode the key from hex
+        val publicKey = invalidKey.decodeHex().toUByteArray()
+
+        // Check if the public key is valid
+        assertFalse(Secp256k1.validate(publicKey).isSuccess)
+    }
+
+    @Test
+    fun testPublicKeyUnderflow() {
+        // A secp256k1 public key with a y-coordinate equal to zero
+        val publicKey = ("04" +
+                "0000000000000000000000000000000000000000000000000000000000000000" +
+                "a5f4e7a7724d01c5574eb3e99a80b72df2951c9dcde7a38f2e2ba611cd440a77"
+                ).decodeHex().toUByteArray()
+
+        // Check if the public key is valid
+        assertFalse(Secp256k1.validate(publicKey).isSuccess)
+    }
+
+    @Test
+    fun testPublicKeyOverflow() {
+        // A secp256k1 public key with a y-coordinate greater than the order of the curve
+        val publicKey = ("04" +
+                "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" +
+                "d1f865a4918e919e98640a697b9c23d7f372c14775d96a247d2c45b01d7ee8ce"
+                ).decodeHex().toUByteArray()
+
+        // Check if the public key is valid
+        assertFalse(Secp256k1.validate(publicKey).isSuccess)
+    }
+
+
+    @Test
+    fun testPrivateKeyOverflow() {
+        // A secp256k1 private key greater than the order of the curve
+        val privateKey = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141".decodeHex().toUByteArray()
+
+        // Check if the key is valid
+        assertFalse(Secp256k1.validatePrivateKey(privateKey).isSuccess)
+    }
+
+    @Test
+    fun testPrivateKeyUnderflow() {
+        // A secp256k1 private key equal to zero
+        val privateKey = "0000000000000000000000000000000000000000000000000000000000000000".decodeHex().toUByteArray()
+
+        // Check if the key is valid
+        assertFalse(Secp256k1.validatePrivateKey(privateKey).isSuccess)
+    }
+
 
 
 }

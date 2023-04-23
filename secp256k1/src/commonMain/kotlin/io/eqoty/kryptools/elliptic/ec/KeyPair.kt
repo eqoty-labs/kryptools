@@ -5,7 +5,6 @@ import com.ionspin.kotlin.bignum.integer.Sign
 import io.eqoty.kryptools.elliptic.BasePoint
 import io.eqoty.kryptools.elliptic.biginteger.BN
 
-data class KeyPairValidateResult(val result: Boolean, val reason: String?)
 data class KeyPairSignOptions(val canonical: Boolean? = null, val k: BN?)
 data class Signature(val r: BN, val s: BN, val recoveryParam: Int?)
 
@@ -37,7 +36,7 @@ class KeyPair(val ec: EC, options: KeyPairOptions) {
 //            this.pub = this.ec.curve.point(key.x, key.y);
 //            return;
 //        }
-        this.pub = this.ec.curve.decodePoint(key, enc)
+        pub = ec.curve.decodePoint(key, enc)
     }
 
     private fun importPrivate(key: UByteArray, enc: String?) {
@@ -48,17 +47,17 @@ class KeyPair(val ec: EC, options: KeyPairOptions) {
         this.priv = this.priv!!.mod(this.ec.n!!)
     }
 
-    fun validate(): KeyPairValidateResult {
-        val pub = this.getPublic()
+    fun validate(): Result<Unit> {
+        val pub = getPublic()
 
         if (pub.isInfinity())
-            return KeyPairValidateResult(result = false, reason = "Invalid public key")
+            return Result.failure(Error("Invalid public key"))
         if (!pub.validate())
-            return KeyPairValidateResult(result = false, reason = "'Public key is not a point")
+            return Result.failure(Error("Public key is not a point"))
         if (!pub.mul(ec.curve.n!!).isInfinity())
-            return KeyPairValidateResult(result = false, reason = "Public key * N != O")
+            return Result.failure(Error("Public key * N != O"))
 
-        return KeyPairValidateResult(result = true, reason = null)
+        return Result.success(Unit)
     }
 
     private fun getPublic(): BasePoint<*> {

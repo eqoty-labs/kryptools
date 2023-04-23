@@ -10,6 +10,24 @@ object Secp256k1 {
 
     private val secp256k1N = BN("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141")
 
+    fun validate(pubkey: UByteArray): Result<Unit> {
+        val keypair = try {
+            secp256k1.keyFromPublic(pubkey)
+        } catch (t: Throwable){
+            return Result.failure(t)
+        }
+        return keypair.validate()
+    }
+
+    fun validatePrivateKey(privkey: UByteArray): Result<Unit> {
+        val keypair = try {
+            secp256k1.keyFromPrivate(privkey)
+        } catch (t: Throwable){
+            return Result.failure(t)
+        }
+        return keypair.validate()
+    }
+
     /**
      * Takes a 32 byte private key and returns a privkey/pubkey pair.
      *
@@ -24,7 +42,7 @@ object Secp256k1 {
         }
 
         val keypair = secp256k1.keyFromPrivate(privkey)
-        if (!keypair.validate().result) {
+        if (!keypair.validate().isSuccess) {
             throw Error("input data is not a valid secp256k1 private key")
         }
 
