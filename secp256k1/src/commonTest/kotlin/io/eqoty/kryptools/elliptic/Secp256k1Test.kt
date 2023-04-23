@@ -39,6 +39,22 @@ class Secp256k1Test {
         assertContentEquals(expectedCompressed, pubkeyCompressed)
     }
 
+    @Test
+    fun test_valid_failing_key() {
+        // todo: issue #2
+        val privkey = "08ff5e5dceb88bc8524b7847e38f7154dd3085b0f193f7b33b05cb589c0f758b".decodeHex().toUByteArray()
+        val uncompressed = Secp256k1.makeKeypair(privkey).pubkey
+        val expectedUncompressed =
+            "04100cc44d0e2ad046571c07e046b75f499eb66cf096e3d4e08e1847c447378b797329f352a553620250bae405c26c87e4ee331e41aec890446083356eedb48df0"
+                .decodeHex().toUByteArray()
+
+        assertContentEquals(expectedUncompressed, uncompressed)
+        val pubkeyCompressed = Secp256k1.compressPubkey(uncompressed)
+        val expectedCompressed =
+            "02100cc44d0e2ad046571c07e046b75f499eb66cf096e3d4e08e1847c447378b79".decodeHex().toUByteArray()
+        assertContentEquals(expectedCompressed, pubkeyCompressed)
+    }
+
 
     @Test
     fun testInvalidPublicKey() {
