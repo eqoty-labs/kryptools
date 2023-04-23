@@ -3,6 +3,7 @@ package io.eqoty.kryptools.elliptic
 import io.eqoty.kryptools.elliptic.biginteger.BN
 import io.eqoty.kryptools.elliptic.biginteger.bitLength
 import io.eqoty.kryptools.elliptic.json.PrecomputedScep256k1
+import io.eqoty.kryptools.getPadded
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -205,14 +206,14 @@ class ShortCurvePoint : BasePoint<ShortCurve> {
     }
 
     override fun encode(compact: Boolean): UByteArray {
-        val x = x!!.number.toUByteArray()
+        val x = x!!.number.toUByteArray().getPadded(32)
 
         if (compact) {
             val prepend = ubyteArrayOf(if (y!!.isEven()) 0x02u else 0x03u)
             return prepend + x
         }
 
-        return ubyteArrayOf(0x04u) + x + y!!.number.toUByteArray()
+        return ubyteArrayOf(0x04u) + x + y!!.number.toUByteArray().getPadded(32)
     }
 
     override fun dbl(): BasePoint<ShortCurve> {

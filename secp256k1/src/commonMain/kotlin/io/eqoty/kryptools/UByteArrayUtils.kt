@@ -22,7 +22,7 @@ fun ByteString.toUByteArray(): UByteArray =
 fun UByteArray.getPadded(length: Int): UByteArray {
     val paddingLength = length - this.size
     if (paddingLength < 0) {
-        throw Error("Length too small to hold parameter r")
+        throw Error("Length smaller than this.length")
     }
     val padding = UByteArray(paddingLength) { 0u }
     return padding + this
