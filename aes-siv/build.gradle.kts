@@ -2,8 +2,6 @@ import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    @Suppress("DSL_SCOPE_VIOLATION")
-    val libs = libs
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.com.vanniktech.maven.publish)
 }
