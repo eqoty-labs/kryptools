@@ -38,19 +38,17 @@ object Secp256k1 {
         if (privkey.size != 32) {
             // is this check missing in secp256k1.validatePrivateKey?
             // https://github.com/bitjson/bitcoin-ts/issues/4
-            throw Error("input data is not a valid secp256k1 private key")
+            throw Error("input data is not a valid secp256k1 private key: privkey.size(${privkey.size}) != 32")
         }
 
         val keypair = secp256k1.keyFromPrivate(privkey)
-        if (!keypair.validate().isSuccess) {
-            throw Error("input data is not a valid secp256k1 private key")
-        }
+        keypair.validate().getOrThrow()
 
         // range test that is not part of the elliptic implementation
         val privkeyAsBigInteger = BN(privkey)
         if (privkeyAsBigInteger >= secp256k1N) {
             // not strictly smaller than N
-            throw Error("input data is not a valid secp256k1 private key")
+            throw Error("input data is not a valid secp256k1 private key: not strictly smaller than N")
         }
 
         val out = Secp256k1Keypair(
