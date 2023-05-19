@@ -8,18 +8,18 @@ com-vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.re
 
 [versions]
 
-kotlin = "1.8.20"
+kotlin = "1.8.21"
 
 vanniktech-publish = "0.25.2"
 okio = "3.3.0"
-kotlinx-serialization = "1.5.0"
+kotlinx-serialization = "1.5.1"
 kotlinx-coroutines = "1.6.4"
 
 bignum = "0.3.8"
 
 libsodium = "0.8.9"
 bip39 = "1.0.2-mpp"
-ripemd160 = "1.1.3-nativempp"
+ripemd160 = "1.1.3"
 
 siv-mode = "1.4.4"
 
@@ -36,6 +36,6 @@ bignum = { module = "com.ionspin.kotlin:bignum", version.ref = "bignum" }
 bignum-serialization-kotlinx = { module = "com.ionspin.kotlin:bignum-serialization-kotlinx", version.ref = "bignum" }
 
 io-github-luca992-cash-z-ecc-android-kotlinBip39 = { module = "io.github.luca992.cash.z.ecc.android:kotlin-bip39", version.ref = "bip39" }
-com-github-luca992-khash-ripemd160 = { module = "com.github.luca992.khash:ripemd160", version.ref = "ripemd160" }
+com-github-komputing-khash-ripemd160 = { module = "com.github.komputing.khash:ripemd160", version.ref = "ripemd160" }
 
 org-cryptomator-sivMode = { module = "org.cryptomator:siv-mode", version.ref = "siv-mode" }
