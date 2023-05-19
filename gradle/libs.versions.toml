@@ -13,7 +13,7 @@ kotlin = "1.8.21"
 vanniktech-publish = "0.25.2"
 okio = "3.3.0"
 kotlinx-serialization = "1.5.1"
-kotlinx-coroutines = "1.6.4"
+kotlinx-coroutines = "1.7.1"
 
 bignum = "0.3.8"
 
