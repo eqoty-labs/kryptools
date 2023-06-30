@@ -56,8 +56,6 @@ kotlin {
                 implementation(libs.bignum.serialization.kotlinx)
                 implementation(libs.com.ionspin.kotlin.multiplatformCryptoLibsodiumBindings)
                 implementation(libs.io.github.luca992.cash.z.ecc.android.kotlinBip39)
-                implementation(libs.com.github.komputing.khash.ripemd160)
-
             }
         }
         val commonTest by getting {
