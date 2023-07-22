@@ -11,19 +11,18 @@ version = project.property("VERSION_NAME") as String
 
 object Targets {
 
-    val iosTargets = arrayOf(
-        "iosArm64", "iosX64", "iosSimulatorArm64",
+    val iosTargets = arrayOf("iosArm64", "iosX64", "iosSimulatorArm64")
+    val tvosTargets = arrayOf("tvosArm64", "tvosX64", "tvosSimulatorArm64")
+    val watchosTargets = arrayOf(
+        "watchosArm32", "watchosArm64", "watchosX64", "watchosSimulatorArm64", "watchosDeviceArm64"
     )
-    val watchosTargets = arrayOf<String>()
-    val tvosTargets = arrayOf(
-        "tvosArm64", "tvosX64", "tvosSimulatorArm64"
+    val macosTargets = arrayOf("macosX64", "macosArm64")
+    val darwinTargets = iosTargets + tvosTargets + watchosTargets + macosTargets
+    val linuxTargets = arrayOf("linuxX64", "linuxArm64")
+    val mingwTargets = arrayOf("mingwX64")
+    val androidTargets = arrayOf(
+        "androidNativeArm32", "androidNativeArm64", "androidNativeX86", "androidNativeX64",
     )
-    val macosTargets = arrayOf(
-        "macosX64", "macosArm64",
-    )
-    val darwinTargets = iosTargets + watchosTargets + tvosTargets + macosTargets
-    val linuxTargets = arrayOf("linuxArm64", "linuxX64")
-    val mingwTargets = arrayOf<String>()
     val nativeTargets = linuxTargets + darwinTargets + mingwTargets
 
 }
@@ -43,6 +42,12 @@ kotlin {
             }
         }
         nodejs()
+    }
+    @Suppress("OPT_IN_USAGE")
+    wasm{
+        browser()
+        nodejs()
+        d8()
     }
     for (target in Targets.nativeTargets) {
         targets.add(presets.getByName(target).createTarget(target))

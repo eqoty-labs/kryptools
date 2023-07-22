@@ -22,7 +22,7 @@ actual class AesSIV actual constructor() {
             ctx,
             ciphertextPtr, outputLengthPtr,
             txEncryptionKey.toCValues(), txEncryptionKey.size.convert(),
-            null, 0,
+            null, 0u,
             plaintext.toCValues(), plaintext.size.convert(),
             associatedData.toCValues(), associatedData.size.convert(),
         )
@@ -52,7 +52,7 @@ actual class AesSIV actual constructor() {
             ctx,
             plaintextPtr, outputLengthPtr,
             txEncryptionKey.toCValues(), txEncryptionKey.size.convert(),
-            null, 0,
+            null, 0u,
             ciphertext.toCValues(), ciphertext.size.convert(),
             associatedData.toCValues(), associatedData.size.convert(),
         )
