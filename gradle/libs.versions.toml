@@ -18,7 +18,7 @@ kotlinx-coroutines = "1.7.3"
 bignum = "0.3.8"
 
 libsodium = "0.9.0"
-bip39 = "1.0.2-mpp"
+bip39 = "1.0.6-mpp"
 
 siv-mode = "1.5.0"
 
