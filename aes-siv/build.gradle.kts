@@ -1,4 +1,5 @@
 import com.vanniktech.maven.publish.SonatypeHost
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
@@ -27,14 +28,14 @@ object Targets {
 kotlin {
     jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = JvmTarget.JVM_1_8.target
         }
     }
     js(IR) {
         browser {
-            testTask {
+            testTask(Action {
                 useMocha {}
-            }
+            })
         }
     }
     val darwinTargets = mutableListOf<KotlinNativeTarget>()

@@ -1529,17 +1529,17 @@ kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-libsodium-sumo@^0.7.0:
-  version "0.7.10"
-  resolved "https://registry.yarnpkg.com/libsodium-sumo/-/libsodium-sumo-0.7.10.tgz#169756dbf32088f42e30dfb0a7860074663fb0b4"
-  integrity sha512-xvYHwrTPvw9EFvX77x6gFiB7vdTv4+9xpM5DCkg9FJwysHoBO7sYXxXjy5L2gQSuWaINbtjBUry9eCg/+nYwCA==
+libsodium-sumo@^0.7.13:
+  version "0.7.13"
+  resolved "https://registry.yarnpkg.com/libsodium-sumo/-/libsodium-sumo-0.7.13.tgz#533b97d2be44b1277e59c1f9f60805978ac5542d"
+  integrity sha512-zTGdLu4b9zSNLfovImpBCbdAA4xkpkZbMnSQjP8HShyOutnGjRHmSOKlsylh1okao6QhLiz7nG98EGn+04cZjQ==
 
-libsodium-wrappers-sumo@0.7.9:
-  version "0.7.9"
-  resolved "https://registry.yarnpkg.com/libsodium-wrappers-sumo/-/libsodium-wrappers-sumo-0.7.9.tgz#d15a346870c8e339baf1518f06b0ddccfa1e1046"
-  integrity sha512-XLgLkqY973PngrRElbjOH0y7bJKYEfMWVpWPmW5iuhBjO6zXvHYQWtN52MVEeie/h98ZXN1Aw9BE+GzxQVAfLg==
+libsodium-wrappers-sumo@0.7.13:
+  version "0.7.13"
+  resolved "https://registry.yarnpkg.com/libsodium-wrappers-sumo/-/libsodium-wrappers-sumo-0.7.13.tgz#a33aea845a0bb56db067548f04feba28c730ab8e"
+  integrity sha512-lz4YdplzDRh6AhnLGF2Dj2IUj94xRN6Bh8T0HLNwzYGwPehQJX6c7iYVrFUPZ3QqxE0bqC+K0IIqqZJYWumwSQ==
   dependencies:
-    libsodium-sumo "^0.7.0"
+    libsodium-sumo "^0.7.13"
 
 loader-runner@^4.2.0:
   version "4.3.0"

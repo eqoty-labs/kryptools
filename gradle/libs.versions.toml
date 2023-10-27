@@ -8,19 +8,19 @@ com-vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.re
 
 [versions]
 
-kotlin = "1.9.0"
+kotlin = "1.9.10"
 
 vanniktech-publish = "0.25.3"
-okio = "3.4.0"
-kotlinx-serialization = "1.5.1"
-kotlinx-coroutines = "1.7.2"
+okio = "3.6.0"
+kotlinx-serialization = "1.6.0"
+kotlinx-coroutines = "1.7.3"
 
 bignum = "0.3.8"
 
-libsodium = "0.8.9"
+libsodium = "0.9.0"
 bip39 = "1.0.2-mpp"
 
-siv-mode = "1.4.4"
+siv-mode = "1.5.0"
 
 [libraries]
 

@@ -1,4 +1,5 @@
 import com.vanniktech.maven.publish.SonatypeHost
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
@@ -33,7 +34,7 @@ object Targets {
 kotlin {
     jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = JvmTarget.JVM_1_8.target
         }
     }
     js(IR) {
