@@ -38,6 +38,12 @@ kotlin {
         browser()
         nodejs()
     }
+    @Suppress("OPT_IN_USAGE")
+    wasm {
+        browser()
+        nodejs()
+        d8()
+    }
     for (target in Targets.nativeTargets) {
         targets.add(presets.getByName(target).createTarget(target))
     }
