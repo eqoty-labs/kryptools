@@ -24,7 +24,7 @@ object Targets {
     val androidTargets = arrayOf(
         "androidNativeArm32", "androidNativeArm64", "androidNativeX86", "androidNativeX64",
     )
-    val nativeTargets = linuxTargets + darwinTargets + mingwTargets
+    val nativeTargets = linuxTargets + darwinTargets + mingwTargets + androidTargets
 
 }
 
