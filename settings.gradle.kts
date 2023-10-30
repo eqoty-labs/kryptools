@@ -1,3 +1,5 @@
+import de.fayard.refreshVersions.core.StabilityLevel
+
 rootProject.name = "kryptools"
 
 pluginManagement {
@@ -29,8 +31,11 @@ plugins {
 }
 
 
-refreshVersions { // Optional: configure the plugin
-    // ...
+refreshVersions {
+    rejectVersionIf {
+        @Suppress("UnstableApiUsage")
+        candidate.stabilityLevel != StabilityLevel.Stable
+    }
 }
 
 include(":aes-siv")
