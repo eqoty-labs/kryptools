@@ -1,11 +1,10 @@
 package io.eqoty.kryptools.elliptic.ec
 
-import com.ionspin.kotlin.crypto.util.LibsodiumRandom
 import io.eqoty.kryptools.elliptic.Curve
 import io.eqoty.kryptools.elliptic.ShortCurve
 import io.eqoty.kryptools.elliptic.biginteger.BN
 import io.eqoty.kryptools.elliptic.curves.Scep256k1Preset
-
+import dev.whyoleg.cryptography.random.CryptographyRandom
 class EC(val curve: Curve) {
 
     val n = curve.n
@@ -49,7 +48,7 @@ class EC(val curve: Curve) {
             var k: BN = if (options.k != null) {
                 TODO() /* options.k(iter) */
             } else {
-                BN(LibsodiumRandom.buf(this.n.byteLength()))
+                BN(CryptographyRandom.nextBytes(n.byteLength()).asUByteArray())
             }
             k = this.truncateToN(k, true)
             if (k <= 1 || k >= ns1)

@@ -15,7 +15,11 @@ object Targets {
     val iosTargets = arrayOf(
         "iosArm64", "iosX64", "iosSimulatorArm64",
     )
-    val watchosTargets = arrayOf<String>()
+
+    // Todo: add targets as https://github.com/ionspin/kotlin-multiplatform-bignum adds support for them
+    val watchosTargets = arrayOf(
+        "watchosArm32", "watchosArm64", "watchosSimulatorArm64",
+    )
     val tvosTargets = arrayOf(
         "tvosArm64", "tvosX64", "tvosSimulatorArm64"
     )
@@ -23,8 +27,10 @@ object Targets {
         "macosX64", "macosArm64",
     )
     val darwinTargets = iosTargets + watchosTargets + tvosTargets + macosTargets
+
+    // Todo: add targets as https://github.com/ionspin/kotlin-multiplatform-bignum adds support for them
     val linuxTargets = arrayOf("linuxX64")
-    val mingwTargets = arrayOf<String>()
+    val mingwTargets = arrayOf("mingwX64")
     val nativeTargets = linuxTargets + darwinTargets + mingwTargets
 
 }
@@ -55,7 +61,7 @@ kotlin {
                 implementation(libs.com.squareup.okio)
                 implementation(libs.bignum)
                 implementation(libs.bignum.serialization.kotlinx)
-                implementation(libs.com.ionspin.kotlin.multiplatformCryptoLibsodiumBindings)
+                implementation("dev.whyoleg.cryptography:cryptography-random:0.3.0-SNAPSHOT")
                 implementation(libs.io.github.luca992.cash.z.ecc.android.kotlinBip39)
             }
         }

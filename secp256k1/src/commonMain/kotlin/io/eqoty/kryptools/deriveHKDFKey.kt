@@ -1,10 +1,10 @@
 package io.eqoty.kryptools
 
-import com.ionspin.kotlin.crypto.auth.Auth
-import com.ionspin.kotlin.crypto.auth.crypto_auth_BYTES
-import com.ionspin.kotlin.crypto.auth.crypto_auth_KEYBYTES
-import com.ionspin.kotlin.crypto.util.encodeToUByteArray
+import okio.ByteString.Companion.toByteString
 import kotlin.math.roundToInt
+
+const val crypto_auth_BYTES = 32
+const val crypto_auth_KEYBYTES = 32
 
 sealed class HKDFError(override val message: String) : Error()
 class HKDFInvalidSaltError : HKDFError("Salt length must match exactly the key length of the HMAC function.")
@@ -34,7 +34,7 @@ fun deriveHKDFKey(ikm: UByteArray, _salt: UByteArray? = null, info: String = "",
 
     // Step 1: Extract
     val prk = try {
-        Auth.authHmacSha256(ikm, salt)
+        ikm.asByteArray().toByteString().hmacSha256(salt.asByteArray().toByteString())
     } catch (t: Throwable) {
         throw HMACCalculationFailedError(t.message!!)
     }
@@ -47,11 +47,11 @@ fun deriveHKDFKey(ikm: UByteArray, _salt: UByteArray? = null, info: String = "",
     for (i in 1..N) {
         val message = arrayListOf<UByte>()
         message.addAll(lastTi)
-        message.addAll(info.encodeToUByteArray())
+        message.addAll(info.encodeToByteArray().asUByteArray())
         message.add(i.toUByte())
 
         val currentTi = try {
-            Auth.authHmacSha256(message.toUByteArray(), prk)
+            message.toUByteArray().asByteString().hmacSha256(prk).toUByteArray()
         } catch (t: Throwable) {
             throw HMACCalculationFailedError(t.message!!)
         }

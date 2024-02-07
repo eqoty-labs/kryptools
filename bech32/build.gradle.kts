@@ -42,7 +42,6 @@ kotlin {
     wasm {
         browser()
         nodejs()
-        d8()
     }
     for (target in Targets.nativeTargets) {
         targets.add(presets.getByName(target).createTarget(target))

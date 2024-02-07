@@ -1,5 +1,3 @@
-import de.fayard.refreshVersions.core.StabilityLevel
-
 rootProject.name = "kryptools"
 
 pluginManagement {
@@ -12,13 +10,14 @@ pluginManagement {
     }
     plugins {
         // See https://jmfayard.github.io/refreshVersions
-        id("de.fayard.refreshVersions") version "0.60.3"
+        id("de.fayard.refreshVersions") version "0.60.5"
     }
 }
 
 dependencyResolutionManagement {
     repositories {
         maven("https://oss.sonatype.org/content/repositories/snapshots")
+        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         mavenCentral()
         google()
@@ -32,10 +31,10 @@ plugins {
 
 
 refreshVersions {
-    rejectVersionIf {
-        @Suppress("UnstableApiUsage")
-        candidate.stabilityLevel != StabilityLevel.Stable
-    }
+//    rejectVersionIf {
+//        @Suppress("UnstableApiUsage")
+//        candidate.stabilityLevel != StabilityLevel.Stable
+//    }
 }
 
 include(":aes-siv")
