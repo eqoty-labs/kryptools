@@ -1,9 +1,18 @@
 package io.eqoty.kryptools.aes256gcm
 
+import dev.whyoleg.cryptography.BinarySize.Companion.bits
+import dev.whyoleg.cryptography.CryptographyProvider
+import dev.whyoleg.cryptography.algorithms.symmetric.AES
+
 internal const val TAG_SIZE_BITS = 128
 internal const val TAG_SIZE_BYTES = 16
 
-expect class Aes256Gcm() {
+data class AesGcmEncryptResult(val iv: UByteArray, val cyphertext: UByteArray)
+class Aes256Gcm() {
+
+    val provider = CryptographyProvider.Default
+    val gcmProvider = provider.get(AES.GCM)
+    val ctrProvider = provider.get(AES.CBC)
 
     /***
      * @param iv - initialization vector (should be of size 12)
@@ -11,10 +20,17 @@ expect class Aes256Gcm() {
      * @param plaintext - the binary to encrypt
      */
     suspend fun encrypt(
-        iv: UByteArray,
         key: UByteArray,
         plaintext: UByteArray
-    ): UByteArray
+    ): AesGcmEncryptResult {
+        val ivSizeBytes = 12
+        val aesGcmkey = gcmProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
+        val ivAndCiphertext = aesGcmkey.cipher().encrypt(plaintext.asByteArray()).asUByteArray()
+        return AesGcmEncryptResult(
+            ivAndCiphertext.sliceArray(0 until ivSizeBytes),
+            ivAndCiphertext.sliceArray(ivSizeBytes until ivAndCiphertext.size)
+        )
+    }
 
     /***
      * @param iv - initialization vector (should be of size 12)
@@ -25,7 +41,10 @@ expect class Aes256Gcm() {
         iv: UByteArray,
         key: UByteArray,
         ciphertext: UByteArray
-    ): UByteArray
+    ): UByteArray {
+        val aesGcmkey = gcmProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
+        return aesGcmkey.cipher(TAG_SIZE_BITS.bits).decrypt((iv + ciphertext).asByteArray()).asUByteArray()
+    }
 
     /***
      * @param iv - initialization vector (should be 12 bytes)
@@ -43,7 +62,11 @@ expect class Aes256Gcm() {
         ciphertext: UByteArray,
         offset: Int,
         hasTag: Boolean = false
-    ): UByteArray
+    ): UByteArray {
+//        val aesGcmkey = gcmProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
+//        return aesGcmkey.cipher(TAG_SIZE_BITS.bits).decrypt(ciphertext.asByteArray(), iv.asByteArray()).asUByteArray()
+        return ciphertext
+    }
 
 }
 

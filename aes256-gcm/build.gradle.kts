@@ -24,8 +24,8 @@ object Targets {
         "macosX64", "macosArm64",
     )
     val darwinTargets = iosTargets + watchosTargets + tvosTargets + macosTargets
-    val linuxTargets = arrayOf<String>()//("linuxArm64", "linuxX64")
-    val mingwTargets = arrayOf<String>()//("mingwX64",)
+    val linuxTargets = arrayOf("linuxArm64", "linuxX64")
+    val mingwTargets = arrayOf("mingwX64")
     val nativeTargets = linuxTargets + darwinTargets + mingwTargets
 
 }
@@ -46,6 +46,11 @@ kotlin {
         }
         nodejs()
     }
+    @Suppress("OPT_IN_USAGE")
+    wasmJs {
+        browser()
+        nodejs()
+    }
     for (target in Targets.nativeTargets) {
         targets.add(presets.getByName(target).createTarget(target))
     }
@@ -54,21 +59,42 @@ kotlin {
         all {
             languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
         }
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("dev.whyoleg.cryptography:cryptography-core:0.3.0-SNAPSHOT")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
+        val jvmMain by getting {
+            dependsOn(commonMain)
+            dependencies {
+                implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.3.0-SNAPSHOT")
+            }
+        }
         val jsMain by getting {
             dependsOn(commonMain)
             dependencies {
-                implementation(libs.kotlinx.coroutines.core)
+                implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.3.0-SNAPSHOT")
+            }
+        }
+        val wasmJsMain by getting {
+            dependsOn(commonMain)
+            dependencies {
+                implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.3.0-SNAPSHOT")
             }
         }
         val nativeMain by creating {
             dependsOn(commonMain)
+            dependencies {
+                // maybe better to not use prebuilt for every target:
+                // https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-provider-openssl3/
+                implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.3.0-SNAPSHOT")
+            }
         }
         val nativeTest by creating {
             dependsOn(commonTest)
