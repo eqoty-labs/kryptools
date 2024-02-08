@@ -45,7 +45,7 @@ kotlin {
         nodejs()
     }
     @Suppress("OPT_IN_USAGE")
-    wasm {
+    wasmJs {
         browser()
         nodejs()
     }
