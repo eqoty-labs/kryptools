@@ -10,7 +10,7 @@ import org.khronos.webgl.Int8Array
 import org.khronos.webgl.Uint8Array
 import kotlin.js.Promise
 
-private fun UByteArray.toUInt8Array(): Uint8Array = Uint8Array(asByteArray().unsafeCast<Int8Array>().buffer)
+private fun UByteArray.asUInt8Array(): Uint8Array = Uint8Array(asByteArray().unsafeCast<Int8Array>().buffer)
 private fun Uint8Array.asByteArray(): ByteArray = this.unsafeCast<ByteArray>()
 private fun ArrayBuffer.asUByteArray(): UByteArray = Int8Array(this).unsafeCast<ByteArray>().asUByteArray()
 
@@ -47,7 +47,7 @@ actual class Aes256Gcm {
     fun importSecretKey(crypto: Crypto, rawKey: UByteArray, algorithm: String): Promise<CryptoKey> {
         return crypto.subtle.importKey(
             "raw",
-            rawKey.toUInt8Array(),
+            rawKey.asUInt8Array(),
             algorithm,
             true,
             arrayOf("encrypt", "decrypt")
@@ -64,14 +64,14 @@ actual class Aes256Gcm {
         // https://youtrack.jetbrains.com/issue/KT-44944/KJS-Non-mangled-types 🙃
         val jsparams: dynamic = Unit
         jsparams.name = "AES-GCM"
-        jsparams.iv = iv.toUInt8Array()
+        jsparams.iv = iv.asUInt8Array()
         jsparams.tagLength = TAG_SIZE_BITS
 
         val cryptoKey = cryptoKeysGcm.getOrPut(key) { importSecretKey(crypto, key, "AES-GCM").await() }
         val encryptedBuffer = crypto.subtle.encrypt(
             jsparams as AesGcmParams,
             cryptoKey,
-            plaintext.toUInt8Array()
+            plaintext.asUInt8Array()
         ).await()
         return encryptedBuffer.asUByteArray()
     }
@@ -85,14 +85,14 @@ actual class Aes256Gcm {
         // https://youtrack.jetbrains.com/issue/KT-44944/KJS-Non-mangled-types 🙃
         val jsparams: dynamic = Unit
         jsparams.name = "AES-GCM"
-        jsparams.iv = iv.toUInt8Array()
+        jsparams.iv = iv.asUInt8Array()
         jsparams.tagLength = TAG_SIZE_BITS
 
         val cryptoKey = cryptoKeysGcm.getOrPut(key) { importSecretKey(crypto, key, "AES-GCM").await() }
         val plaintextBuffer = crypto.subtle.decrypt(
             jsparams as AesGcmParams,
             cryptoKey,
-            ciphertext.toUInt8Array()
+            ciphertext.asUInt8Array()
         ).await()
         return plaintextBuffer.asUByteArray()
     }
@@ -112,14 +112,14 @@ actual class Aes256Gcm {
         // https://youtrack.jetbrains.com/issue/KT-44944/KJS-Non-mangled-types 🙃
         val jsparams: dynamic = Unit
         jsparams.name = "AES-CTR"
-        jsparams.counter = counter.toUInt8Array()
+        jsparams.counter = counter.asUInt8Array()
         jsparams.length = inputLen
 
         val cryptoKey = cryptoKeysCtr.getOrPut(key) { importSecretKey(crypto, key, "AES-CTR").await() }
         val plaintextBuffer = crypto.subtle.decrypt(
             jsparams as AesCtrParams,
             cryptoKey,
-            ciphertext.toUInt8Array()
+            ciphertext.asUInt8Array()
         ).await()
         return plaintextBuffer.asUByteArray()
     }
