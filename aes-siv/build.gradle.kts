@@ -98,7 +98,6 @@ kotlin {
         val jsTest by getting {
             dependsOn(commonTest)
             dependencies {
-                implementation(devNpm("@peculiar/webcrypto", "^1.4.0"))
                 implementation(devNpm("@happy-dom/global-registrator", "^7.5.2"))
             }
         }

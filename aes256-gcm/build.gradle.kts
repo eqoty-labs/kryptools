@@ -65,7 +65,6 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(npm("@peculiar/webcrypto", "^1.4.1"))
             }
         }
         val nativeMain by creating {

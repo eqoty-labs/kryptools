@@ -1,8 +1,8 @@
 package io.eqoty.kryptools.aes256gcm
 
-import Crypto
 import jslibs.tsstdlib.AesCtrParams
 import jslibs.tsstdlib.AesGcmParams
+import jslibs.tsstdlib.Crypto
 import jslibs.tsstdlib.CryptoKey
 import kotlinx.coroutines.await
 import org.khronos.webgl.ArrayBuffer
@@ -14,9 +14,27 @@ private fun UByteArray.toUInt8Array(): Uint8Array = Uint8Array(asByteArray().uns
 private fun Uint8Array.asByteArray(): ByteArray = this.unsafeCast<ByteArray>()
 private fun ArrayBuffer.asUByteArray(): UByteArray = Int8Array(this).unsafeCast<ByteArray>().asUByteArray()
 
+// https://github.com/whyoleg/cryptography-kotlin/blob/d524143a0719e6926b0ae190977a7341673fa718/cryptography-random/src/jsMain/kotlin/CryptographyRandom.js.kt
+//language=JavaScript
+private fun getCrypto(): Crypto {
+    return js(
+        code = """
+    
+        var isNodeJs = typeof process !== 'undefined' && process.versions != null && process.versions.node != null
+        if (isNodeJs) {
+            return (eval('require')('node:crypto').webcrypto);
+        } else {
+            return (window ? (window.crypto ? window.crypto : window.msCrypto) : self.crypto);
+        }
+    
+               """
+    ).unsafeCast<Crypto>()
+}
+
+
 actual class Aes256Gcm {
 
-    val crypto = Crypto()
+    val crypto = getCrypto()
     val cryptoKeysCtr = mutableMapOf<UByteArray, CryptoKey>()
     val cryptoKeysGcm = mutableMapOf<UByteArray, CryptoKey>()
 
