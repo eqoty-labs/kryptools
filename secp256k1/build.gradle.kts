@@ -10,30 +10,6 @@ plugins {
 group = project.property("GROUP") as String
 version = project.property("VERSION_NAME") as String
 
-object Targets {
-
-    val iosTargets = arrayOf(
-        "iosArm64", "iosX64", "iosSimulatorArm64",
-    )
-
-    // Todo: add targets as https://github.com/ionspin/kotlin-multiplatform-bignum adds support for them
-    val watchosTargets = arrayOf(
-        "watchosArm32", "watchosArm64", "watchosSimulatorArm64",
-    )
-    val tvosTargets = arrayOf(
-        "tvosArm64", "tvosX64", "tvosSimulatorArm64"
-    )
-    val macosTargets = arrayOf(
-        "macosX64", "macosArm64",
-    )
-    val darwinTargets = iosTargets + watchosTargets + tvosTargets + macosTargets
-
-    // Todo: add targets as https://github.com/ionspin/kotlin-multiplatform-bignum adds support for them
-    val linuxTargets = arrayOf("linuxX64")
-    val mingwTargets = arrayOf("mingwX64")
-    val nativeTargets = linuxTargets + darwinTargets + mingwTargets
-
-}
 
 kotlin {
     jvm {
@@ -50,9 +26,20 @@ kotlin {
         browser()
         nodejs()
     }
-    for (target in Targets.nativeTargets) {
-        targets.add(presets.getByName(target).createTarget(target))
-    }
+
+    iosArm64(); iosX64() ;iosSimulatorArm64()
+    tvosArm64(); tvosX64(); tvosSimulatorArm64()
+    watchosArm32(); watchosArm64(); watchosSimulatorArm64()
+    macosX64(); macosArm64()
+    linuxX64()
+    mingwX64()
+
+    // Todo: add targets as https://github.com/ionspin/kotlin-multiplatform-bignum adds support for them
+    //watchosDeviceArm64()
+    //watchosX64()
+    //linuxArm64()
+
+    applyDefaultHierarchyTemplate()
 
     sourceSets {
         all {
