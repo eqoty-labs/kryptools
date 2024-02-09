@@ -1,67 +1,74 @@
 package io.eqoty.kryptools.aessiv
 
-import kotlinx.cinterop.*
-import libaes_siv.AES_SIV_CTX_free
-import libaes_siv.AES_SIV_CTX_new
-import libaes_siv.AES_SIV_Decrypt
-import libaes_siv.AES_SIV_Encrypt
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.refTo
+import kotlinx.cinterop.toCValues
+import libaes_siv.*
 
 actual class AesSIV actual constructor() {
     actual suspend fun encrypt(
         txEncryptionKey: UByteArray,
         plaintext: UByteArray,
-        associatedData: UByteArray
+        associatedData: List<UByteArray>
     ): UByteArray = memScoped {
         val ctx = AES_SIV_CTX_new()
-        val outputLength = txEncryptionKey.size / 2 + plaintext.size
-        val ciphertext = UByteArray(outputLength)
-        val ciphertextPtr = ciphertext.refTo(0)
-        val outputLengthPtr = cValue<ULongVar>().ptr
-        outputLengthPtr.pointed.value = outputLength.toULong()
-        val success = AES_SIV_Encrypt(
+        val outputLength = plaintext.size // For AES-SIV, output size is plaintext size + tag size.
+        val tagSize = 16 // AES-SIV authentication tag size is 16 bytes
+        val tagAndCiphertext = UByteArray(tagSize + outputLength)
+        val tagPtr = tagAndCiphertext.refTo(0)
+        val ciphertextPtr = if (outputLength == 0) null else tagAndCiphertext.refTo(tagSize)
+
+        AES_SIV_Init(ctx, txEncryptionKey.toCValues(), txEncryptionKey.size.convert())
+
+        associatedData.forEach {
+            AES_SIV_AssociateData(ctx, it.toCValues(), it.size.convert())
+        }
+        val success = AES_SIV_EncryptFinal(
             ctx,
-            ciphertextPtr, outputLengthPtr,
-            txEncryptionKey.toCValues(), txEncryptionKey.size.convert(),
-            null, 0u,
+            tagPtr, ciphertextPtr,
             plaintext.toCValues(), plaintext.size.convert(),
-            associatedData.toCValues(), associatedData.size.convert(),
         )
         if (success == 0) {
             throw Error("AES_SIV_Encrypt failed")
         }
-        require(outputLengthPtr.pointed.value.toInt() == outputLength) {
-            "outputLength set by AES_SIV_Encrypt doesn't match input outputLength"
-        }
+
         AES_SIV_CTX_free(ctx)
-        return@memScoped ciphertext
+        return@memScoped tagAndCiphertext
     }
 
 
     actual suspend fun decrypt(
         txEncryptionKey: UByteArray,
         ciphertext: UByteArray,
-        associatedData: UByteArray
+        associatedData: List<UByteArray>
     ): UByteArray = memScoped {
         val ctx = AES_SIV_CTX_new()
-        val outputLength = ciphertext.size - txEncryptionKey.size / 2
+        val tagSize = 16 // AES-SIV authentication tag size is 16 bytes
+        val outputLength = ciphertext.size - tagSize // For AES-SIV, output size is plaintext size + tag size.
+        if (outputLength == 0) {
+            return@memScoped UByteArray(0)
+        }
         val plaintext = UByteArray(outputLength)
-        val plaintextPtr = plaintext.refTo(0)
-        val outputLengthPtr = cValue<ULongVar>().ptr
-        outputLengthPtr.pointed.value = outputLength.toULong()
-        val success = AES_SIV_Decrypt(
+        val tagPtr = ciphertext.refTo(0)
+        val ciphertextPtr = ciphertext.refTo(tagSize)
+
+        AES_SIV_Init(ctx, txEncryptionKey.toCValues(), txEncryptionKey.size.convert())
+
+        associatedData.forEach {
+            AES_SIV_AssociateData(ctx, it.toCValues(), it.size.convert())
+        }
+
+        val success = AES_SIV_DecryptFinal(
             ctx,
-            plaintextPtr, outputLengthPtr,
-            txEncryptionKey.toCValues(), txEncryptionKey.size.convert(),
-            null, 0u,
-            ciphertext.toCValues(), ciphertext.size.convert(),
-            associatedData.toCValues(), associatedData.size.convert(),
+            plaintext.refTo(0),
+            tagPtr, ciphertextPtr,
+            outputLength.convert(),
         )
         if (success == 0) {
             throw Error("AES_SIV_Decrypt failed")
         }
-        require(outputLengthPtr.pointed.value.toInt() == outputLength) {
-            "outputLength set by AES_SIV_Encrypt doesn't match input outputLength"
-        }
+
         AES_SIV_CTX_free(ctx)
         return@memScoped plaintext
     }
