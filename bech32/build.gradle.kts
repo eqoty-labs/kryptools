@@ -10,23 +10,6 @@ plugins {
 group = project.property("GROUP") as String
 version = project.property("VERSION_NAME") as String
 
-object Targets {
-
-    val iosTargets = arrayOf("iosArm64", "iosX64", "iosSimulatorArm64")
-    val tvosTargets = arrayOf("tvosArm64", "tvosX64", "tvosSimulatorArm64")
-    val watchosTargets = arrayOf(
-        "watchosArm32", "watchosArm64", "watchosX64", "watchosSimulatorArm64", "watchosDeviceArm64"
-    )
-    val macosTargets = arrayOf("macosX64", "macosArm64")
-    val darwinTargets = iosTargets + tvosTargets + watchosTargets + macosTargets
-    val linuxTargets = arrayOf("linuxX64", "linuxArm64")
-    val mingwTargets = arrayOf("mingwX64")
-    val androidTargets = arrayOf(
-        "androidNativeArm32", "androidNativeArm64", "androidNativeX86", "androidNativeX64",
-    )
-    val nativeTargets = linuxTargets + darwinTargets + mingwTargets + androidTargets
-
-}
 
 kotlin {
     jvm {
@@ -43,10 +26,15 @@ kotlin {
         browser()
         nodejs()
     }
-    for (target in Targets.nativeTargets) {
-        targets.add(presets.getByName(target).createTarget(target))
-    }
+    iosArm64(); iosX64(); iosSimulatorArm64()
+    tvosArm64(); tvosX64(); tvosSimulatorArm64()
+    watchosArm32(); watchosArm64(); watchosX64(); watchosSimulatorArm64(); watchosDeviceArm64()
+    macosX64(); macosArm64()
+    linuxX64(); linuxArm64()
+    mingwX64()
+    androidNativeArm32(); androidNativeArm64(); androidNativeX86();androidNativeX64()
 
+    applyDefaultHierarchyTemplate()
     sourceSets {
         all {
             languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
