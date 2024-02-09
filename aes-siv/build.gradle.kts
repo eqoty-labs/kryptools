@@ -1,7 +1,7 @@
 import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
@@ -19,14 +19,12 @@ kotlin {
         }
     }
     js(IR) {
-        browser {
-//            useEsModules()
-        }
+        browser()
         nodejs()
     }
+    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser {
-        }
+        browser()
         nodejs()
     }
     val darwinTargets = mutableListOf<KotlinNativeTarget>()
@@ -81,16 +79,12 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(npm("assert", "^2.1.0"))
-                implementation(npm("@solar-republic/cosmos-grpc", "^0.12.0"))
-                implementation(npm("@solar-republic/neutrino", "^1.0.3"))
             }
         }
         val wasmJsMain by getting {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(npm("@solar-republic/neutrino", "^1.0.3"))
             }
         }
     }
@@ -170,13 +164,4 @@ plugins.withId("com.vanniktech.maven.publish") {
     }
 }
 
-//rootProject.extensions.configure<NodeJsRootExtension> {
-//    nodeVersion = "22.0.0-v8-canary202401102ecfc94f85"
-//    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
-//}
-//
-//
-//tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
-//    args.add("--ignore-engines")
-//}
-//
+
