@@ -17,7 +17,7 @@ class Aes256GcmTests {
     fun encryptsAndDecryptsOk() = runTest {
         val rand = Random(0)
         val aes256Gcm = Aes256Gcm()
-        val key = rand.nextUBytes(16)
+        val key = rand.nextUBytes(32)
         val plainText = rand.nextUBytes(256)
         val result = aes256Gcm.encrypt(key, plainText)
         val decryptedPlainText = aes256Gcm.decrypt(result.iv, key, result.cyphertext)
@@ -30,7 +30,7 @@ class Aes256GcmTests {
     fun encryptsAndDecrypts3BlocksPartiallyOk() = runTest {
         val rand = Random(0)
         val aes256Gcm = Aes256Gcm()
-        val key = rand.nextUBytes(16)
+        val key = rand.nextUBytes(32)
         val blocks = 3
         val plainText = rand.nextUBytes(16 * blocks)
         val encryptResult = aes256Gcm.encrypt(key, plainText)
@@ -56,7 +56,7 @@ class Aes256GcmTests {
     fun encryptsAndDecrypts257BlocksPartiallyOk() = runTest {
         val rand = Random(0)
         val aes256Gcm = Aes256Gcm()
-        val key = rand.nextUBytes(16)
+        val key = rand.nextUBytes(32)
         val blocks = 257
         val plainText = rand.nextUBytes(16 * blocks)
         val encryptResult = aes256Gcm.encrypt(key, plainText)
@@ -77,7 +77,7 @@ class Aes256GcmTests {
     fun encryptsAndDecrypts65536BlocksPartiallyOk() = runTest {
         val rand = Random(0)
         val aes256Gcm = Aes256Gcm()
-        val key = rand.nextUBytes(16)
+        val key = rand.nextUBytes(32)
         val blocks = 65536
         val plainText = rand.nextUBytes(16 * blocks)
         val encryptResult = aes256Gcm.encrypt(key, plainText)
