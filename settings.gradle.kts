@@ -38,7 +38,7 @@ refreshVersions {
 }
 
 include(":aes-siv")
-include(":aes256-gcm")
+include(":aes-gcm")
 include(":axlsign")
 include(":bech32")
 include(":secp256k1")

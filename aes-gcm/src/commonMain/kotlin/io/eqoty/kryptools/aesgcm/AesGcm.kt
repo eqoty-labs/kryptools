@@ -1,15 +1,14 @@
-package io.eqoty.kryptools.aes256gcm
+package io.eqoty.kryptools.aesgcm
 
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.DelicateCryptographyApi
 import dev.whyoleg.cryptography.algorithms.symmetric.AES
 
-internal const val TAG_SIZE_BITS = 128
-internal const val TAG_SIZE_BYTES = 16
+private const val TAG_SIZE_BITS = 128
 
 data class AesGcmEncryptResult(val iv: UByteArray, val cyphertext: UByteArray)
-class Aes256Gcm() {
+class AesGcm {
 
     val provider = CryptographyProvider.Default
     val gcmProvider = provider.get(AES.GCM)
@@ -21,8 +20,7 @@ class Aes256Gcm() {
      * @param plaintext - the binary to encrypt
      */
     suspend fun encrypt(
-        key: UByteArray,
-        plaintext: UByteArray
+        key: UByteArray, plaintext: UByteArray
     ): AesGcmEncryptResult {
         val ivSizeBytes = 12
         val aesGcmkey = gcmProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
@@ -40,9 +38,7 @@ class Aes256Gcm() {
      * @param ciphertext - the binary to decrypt
      */
     suspend fun decrypt(
-        iv: UByteArray,
-        key: UByteArray,
-        ciphertext: UByteArray
+        iv: UByteArray, key: UByteArray, ciphertext: UByteArray
     ): UByteArray {
         val aesGcmkey = gcmProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
         return aesGcmkey.cipher(TAG_SIZE_BITS.bits).decrypt((iv + ciphertext).asByteArray()).asUByteArray()
@@ -60,11 +56,7 @@ class Aes256Gcm() {
      */
     @OptIn(DelicateCryptographyApi::class)
     suspend fun decryptAtIndexUnauthenticated(
-        iv: UByteArray,
-        key: UByteArray,
-        ciphertext: UByteArray,
-        offset: Int,
-        hasTag: Boolean = false
+        iv: UByteArray, key: UByteArray, ciphertext: UByteArray, offset: Int, hasTag: Boolean = false
     ): UByteArray {
         val counter = getCounterBytes(iv, offset)
         val aesCtrkey = ctrProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
