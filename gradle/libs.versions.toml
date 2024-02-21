@@ -20,7 +20,7 @@ bignum = "0.3.9"
 bip39 = "1.0.8-SNAPSHOT"
 
 siv-mode = "1.5.0"
-
+cryptography-kotlin = "0.3.0"
 [libraries]
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -35,3 +35,8 @@ bignum-serialization-kotlinx = { module = "com.ionspin.kotlin:bignum-serializati
 io-github-luca992-cash-z-ecc-android-kotlinBip39 = { module = "io.github.luca992.cash.z.ecc.android:kotlin-bip39", version.ref = "bip39" }
 
 org-cryptomator-sivMode = { module = "org.cryptomator:siv-mode", version.ref = "siv-mode" }
+
+dev-whyoleg-cryptography-core = { module = "dev.whyoleg.cryptography:cryptography-core", version.ref = "cryptography-kotlin" }
+dev-whyoleg-cryptography-provider-jdk = { module = "dev.whyoleg.cryptography:cryptography-provider-jdk", version.ref = "cryptography-kotlin" }
+dev-whyoleg-cryptography-provider-webcrypto = { module = "dev.whyoleg.cryptography:cryptography-serialization", version.ref = "cryptography-kotlin" }
+dev-whyoleg-cryptography-provider-openssl3-prebuilt = { module = "dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt", version.ref = "cryptography-kotlin" }

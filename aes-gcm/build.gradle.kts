@@ -45,7 +45,7 @@ kotlin {
         }
         commonMain {
             dependencies {
-                implementation("dev.whyoleg.cryptography:cryptography-core:0.3.0-SNAPSHOT")
+                implementation(libs.dev.whyoleg.cryptography.core)
             }
         }
         commonTest {
@@ -56,39 +56,26 @@ kotlin {
         }
         jvmMain {
             dependencies {
-                implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.3.0")
+                implementation(libs.dev.whyoleg.cryptography.provider.jdk)
             }
         }
         jsMain {
             dependencies {
-                implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.3.0")
+                implementation(libs.dev.whyoleg.cryptography.provider.webcrypto)
             }
         }
         val wasmJsMain by getting {
             dependencies {
-                implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.3.0")
+                implementation(libs.dev.whyoleg.cryptography.provider.webcrypto)
             }
         }
         nativeMain {
             dependencies {
                 // maybe better to not use prebuilt for every target:
                 // https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-provider-openssl3/
-                implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.3.0")
+                implementation(libs.dev.whyoleg.cryptography.provider.openssl3.prebuilt)
             }
         }
     }
 }
 
-// https://youtrack.jetbrains.com/issue/KT-46466
-val dependsOnTasks = mutableListOf<String>()
-tasks.withType<AbstractPublishToMaven>().configureEach {
-    dependsOnTasks.add(this.name.replace("publish", "sign").replaceAfter("Publication", ""))
-    dependsOn(dependsOnTasks)
-}
-
-plugins.withId("com.vanniktech.maven.publish") {
-    mavenPublishing {
-        publishToMavenCentral(SonatypeHost.S01)
-        signAllPublications()
-    }
-}
