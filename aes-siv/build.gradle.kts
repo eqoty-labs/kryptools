@@ -1,6 +1,7 @@
 import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
@@ -10,20 +11,6 @@ plugins {
 group = project.property("GROUP") as String
 version = project.property("VERSION_NAME") as String
 
-object Targets {
-
-    val iosTargets = arrayOf(
-        "iosArm64", "iosX64", "iosSimulatorArm64",
-    )
-    val macosTargets = arrayOf(
-        "macosX64", "macosArm64",
-    )
-    val darwinTargets = iosTargets + macosTargets
-    val linuxTargets = arrayOf<String>()
-    val mingwTargets = arrayOf<String>()
-    val nativeTargets = linuxTargets + darwinTargets + mingwTargets
-
-}
 
 kotlin {
     jvm {
@@ -32,11 +19,13 @@ kotlin {
         }
     }
     js(IR) {
-        browser {
-            testTask(Action {
-                useMocha {}
-            })
-        }
+        browser()
+        nodejs()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        nodejs()
     }
     val darwinTargets = mutableListOf<KotlinNativeTarget>()
     macosX64 {
@@ -59,12 +48,14 @@ kotlin {
         darwinTargets.add(this)
         setupCinterop(Target.IosSimulatorArm64)
     }
+
     darwinTargets.forEach {
         it.apply {
             binaries.framework()
         }
     }
 //    linuxX64()
+    applyDefaultHierarchyTemplate()
 
     sourceSets {
         all {
@@ -72,67 +63,28 @@ kotlin {
             languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }
         val commonMain by getting
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
-        val jvmMain by getting {
+        jvmMain {
+            dependsOn(commonMain)
             dependencies {
                 implementation(libs.org.cryptomator.sivMode)
             }
         }
-        val jsMain by getting {
+        jsMain {
+            dependsOn(commonMain)
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(npm("file-system", "^2.2.2"))
-                implementation(npm("path-browserify", "^1.0.1"))
-                implementation(npm("crypto-browserify", "^3.12.0"))
-                implementation(npm("buffer", "^6.0.3"))
-                implementation(npm("stream-browserify", "^3.0.0"))
-                implementation(npm("os-browserify", "^0.3.0"))
-                implementation(npm("miscreant", "^0.3.2"))
             }
         }
-        val jsTest by getting {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(devNpm("@happy-dom/global-registrator", "^7.5.2"))
-            }
-        }
-        val nativeMain by creating {
+        val wasmJsMain by getting {
             dependsOn(commonMain)
-        }
-        val nativeTest by creating {
-            dependsOn(commonTest)
-        }
-        val darwinMain by creating {
-            dependsOn(nativeMain)
-        }
-        val darwinTest by creating {
-            dependsOn(nativeTest)
-        }
-        Targets.macosTargets.forEach { target ->
-            getByName("${target}Main") {
-                dependsOn(darwinMain)
-            }
-            getByName("${target}Test") {
-                dependsOn(darwinTest)
-            }
-        }
-        val iosMain by creating {
-            dependsOn(darwinMain)
-        }
-        val iosTest by creating {
-            dependsOn(darwinTest)
-        }
-        Targets.iosTargets.forEach { target ->
-            getByName("${target}Main") {
-                dependsOn(iosMain)
-            }
-            getByName("${target}Test") {
-                dependsOn(iosTest)
+            dependencies {
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
     }
@@ -211,3 +163,5 @@ plugins.withId("com.vanniktech.maven.publish") {
         signAllPublications()
     }
 }
+
+

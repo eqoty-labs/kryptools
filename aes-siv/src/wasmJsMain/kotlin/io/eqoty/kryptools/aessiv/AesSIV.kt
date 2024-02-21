@@ -1,7 +1,7 @@
 package io.eqoty.kryptools.aessiv
 
-import io.eqoty.kryptools.utils.asUByteArray
-import io.eqoty.kryptools.utils.asUInt8Array
+import io.eqoty.kryptools.utils.toUByteArray
+import io.eqoty.kryptools.utils.toUInt8Array
 import jslibs.tsstdlib.CryptoKey
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
@@ -36,9 +36,9 @@ actual class AesSIV {
     actual suspend fun encrypt(
         txEncryptionKey: UByteArray, plaintext: UByteArray, associatedData: List<UByteArray>
     ): UByteArray {
-        val atu8_key = txEncryptionKey.asUInt8Array()
-        val atu8_plaintext = plaintext.asUInt8Array()
-        val a_ad = associatedData.map { it.asUInt8Array() }.toTypedArray()
+        val atu8_key = txEncryptionKey.toUInt8Array()
+        val atu8_plaintext = plaintext.toUInt8Array()
+        val a_ad = associatedData.map { it.toUInt8Array() }.toTypedArray()
 //        val encrypted: Uint8Array = aes_128_siv_encrypt(key, plaintext.toUInt8Array(), array).await()
 
         // construct aes keys
@@ -60,16 +60,16 @@ actual class AesSIV {
         atu8_payload.set(aesCtr(d_key_ctr, atu8_iv, atu8_plaintext), NB_AES_BLOCK)
 
         // return payload
-        return atu8_payload.asUByteArray()
+        return atu8_payload.toUByteArray()
     }
 
     actual suspend fun decrypt(
         txEncryptionKey: UByteArray, ciphertext: UByteArray, associatedData: List<UByteArray>
     ): UByteArray {
-        val atu8_key = txEncryptionKey.asUInt8Array()
-        val atu8_payload = ciphertext.asUInt8Array()
+        val atu8_key = txEncryptionKey.toUInt8Array()
+        val atu8_payload = ciphertext.toUInt8Array()
 
-        val a_ad = associatedData.map { it.asUInt8Array() }.toTypedArray()
+        val a_ad = associatedData.map { it.toUInt8Array() }.toTypedArray()
 
         val (d_key_cbc, d_key_ctr) = split_siv_key(atu8_key)
 
@@ -106,10 +106,10 @@ actual class AesSIV {
 //                    "${
 //                        base64_to_text(/^([+a - z\d /]*)/i.exec(bytes_to_text(atu8_plaintext))![1])
 //                    }" +
-                    "\n\nentire plaintext:\n${atu8_plaintext.asUByteArray().asByteArray().decodeToString()}"
+                    "\n\nentire plaintext:\n${atu8_plaintext.toUByteArray().asByteArray().decodeToString()}"
         }
 
         // plaintext
-        return atu8_plaintext.asUByteArray()
+        return atu8_plaintext.toUByteArray()
     }
 }

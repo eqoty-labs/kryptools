@@ -43,7 +43,7 @@ external interface AesCtrParams : Algorithm {
 //    var length: Number
 //}
 
-external interface Algorithm {
+external interface Algorithm : JsAny {
     var name: String
 }
 
@@ -223,11 +223,11 @@ external interface Crypto {
     fun <T : ArrayBufferView> getRandomValues(array: T): T
 }
 
-external interface CryptoKey {
+external interface CryptoKey : JsAny {
     var algorithm: KeyAlgorithm
     var extractable: Boolean
     var type: String /* "private" | "public" | "secret" */
-    var usages: Array<String /* "decrypt" | "deriveBits" | "deriveKey" | "encrypt" | "sign" | "unwrapKey" | "verify" | "wrapKey" */>
+    var usages: JsArray<JsString /* "decrypt" | "deriveBits" | "deriveKey" | "encrypt" | "sign" | "unwrapKey" | "verify" | "wrapKey" */>
 }
 
 //external interface CryptoKeyPair {
@@ -566,7 +566,7 @@ external interface SubtleCrypto {
         keyData: Uint8Array,
         algorithm: String /* String | Algorithm | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | DhImportKeyParams | AesKeyAlgorithm */,
         extractable: Boolean,
-        keyUsages: Array<String /* "decrypt" | "deriveBits" | "deriveKey" | "encrypt" | "sign" | "unwrapKey" | "verify" | "wrapKey" */>
+        keyUsages: JsArray<JsString /* "decrypt" | "deriveBits" | "deriveKey" | "encrypt" | "sign" | "unwrapKey" | "verify" | "wrapKey" */>
     ): Promise<CryptoKey>
 //
 //    fun importKey(

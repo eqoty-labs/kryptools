@@ -4,12 +4,12 @@ expect class AesSIV() {
     suspend fun encrypt(
         txEncryptionKey: UByteArray,
         plaintext: UByteArray,
-        associatedData: UByteArray
+        associatedData: List<UByteArray>
     ): UByteArray
 
     suspend fun decrypt(
         txEncryptionKey: UByteArray,
         ciphertext: UByteArray,
-        associatedData: UByteArray
+        associatedData: List<UByteArray>
     ): UByteArray
 }
