@@ -9,27 +9,6 @@ plugins {
 group = project.property("GROUP") as String
 version = project.property("VERSION_NAME") as String
 
-object Targets {
-
-    val iosTargets = arrayOf(
-        "iosArm64", "iosX64", "iosSimulatorArm64",
-    )
-    val watchosTargets = arrayOf(
-        "watchosArm64", "watchosDeviceArm64", "watchosX64", "watchosSimulatorArm64",
-    )
-    val tvosTargets = arrayOf(
-        "tvosArm64", "tvosX64", "tvosSimulatorArm64"
-    )
-    val macosTargets = arrayOf(
-        "macosX64", "macosArm64",
-    )
-    val darwinTargets = iosTargets + watchosTargets + tvosTargets + macosTargets
-    val linuxTargets = arrayOf<String>()//("linuxArm64", "linuxX64")
-    val mingwTargets = arrayOf<String>()//("mingwX64",)
-    val nativeTargets = linuxTargets + darwinTargets + mingwTargets
-
-}
-
 kotlin {
     jvm {
         compilations.all {
@@ -46,45 +25,55 @@ kotlin {
         }
         nodejs()
     }
-    for (target in Targets.nativeTargets) {
-        targets.add(presets.getByName(target).createTarget(target))
+    @Suppress("OPT_IN_USAGE") wasmJs {
+        browser()
+        nodejs()
     }
+    iosArm64(); iosX64(); iosSimulatorArm64()
+    tvosArm64(); tvosX64(); tvosSimulatorArm64()
+    watchosArm32(); watchosArm64(); watchosX64(); watchosSimulatorArm64(); watchosDeviceArm64()
+    macosX64(); macosArm64()
+    linuxX64(); linuxArm64()
+    mingwX64()
+    androidNativeArm32(); androidNativeArm64(); androidNativeX86();androidNativeX64()
+
+    applyDefaultHierarchyTemplate()
 
     sourceSets {
         all {
             languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
         }
-        val commonMain by getting
-        val commonTest by getting {
+        commonMain {
+            dependencies {
+                implementation("dev.whyoleg.cryptography:cryptography-core:0.3.0-SNAPSHOT")
+            }
+        }
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
-        val jsMain by getting {
-            dependsOn(commonMain)
+        jvmMain {
             dependencies {
-                implementation(libs.kotlinx.coroutines.core)
+                implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.3.0")
             }
         }
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-        val nativeTest by creating {
-            dependsOn(commonTest)
-        }
-        val darwinMain by creating {
-            dependsOn(nativeMain)
-        }
-        val darwinTest by creating {
-            dependsOn(nativeTest)
-        }
-        Targets.darwinTargets.forEach { target ->
-            getByName("${target}Main") {
-                dependsOn(darwinMain)
+        jsMain {
+            dependencies {
+                implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.3.0")
             }
-            getByName("${target}Test") {
-                dependsOn(darwinTest)
+        }
+        val wasmJsMain by getting {
+            dependencies {
+                implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.3.0")
+            }
+        }
+        nativeMain {
+            dependencies {
+                // maybe better to not use prebuilt for every target:
+                // https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-provider-openssl3/
+                implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.3.0")
             }
         }
     }
