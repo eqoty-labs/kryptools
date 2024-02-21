@@ -13,7 +13,6 @@ import kotlin.test.assertFalse
 @ExperimentalCoroutinesApi
 class Aes256GcmTests {
 
-
     @Test
     fun encryptsAndDecryptsOk() = runTest {
         val rand = Random(0)
@@ -26,72 +25,71 @@ class Aes256GcmTests {
         assertEquals(plainText.size, result.cyphertext.size - tagBytesSize)
         assertContentEquals(plainText, decryptedPlainText)
     }
-//
-//    @Test
-//    fun encryptsAndDecrypts3BlocksPartiallyOk() = runTest {
-//        val rand = Random(0)
-//        val aes256Gcm = Aes256Gcm()
-//        val iv = rand.nextUBytes(12)
-//        val key = rand.nextUBytes(16)
-//        val blocks = 3
-//        val plainText = rand.nextUBytes(16 * blocks)
-//        val cypherText = aes256Gcm.encrypt(iv, key, plainText)
-//        assertFalse(plainText.contentEquals(cypherText), "plainText is the same as cypherText")
-//
-//        val firstBlockCypherText = cypherText.sliceArray(0 until 16)
-//        var decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(iv, key, firstBlockCypherText, 0)
-//        assertContentEquals(plainText.sliceArray(0 until 16), decryptedPlainText)
-//
-//        val secondBlockCypherText = cypherText.sliceArray(16 until 32)
-//        decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(iv, key, secondBlockCypherText, 1)
-//        assertContentEquals(plainText.sliceArray(16 until 32), decryptedPlainText)
-//
-//        val thirdBlockCypherText = cypherText.sliceArray(32 until 48)
-//        decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(iv, key, thirdBlockCypherText, 2)
-//        assertContentEquals(plainText.sliceArray(32 until 48), decryptedPlainText)
-//    }
-//
-//    /***
-//     * tests when counter bytes can't be represented by one byte
-//     */
-//    @Test
-//    fun encryptsAndDecrypts257BlocksPartiallyOk() = runTest {
-//        val rand = Random(0)
-//        val aes256Gcm = Aes256Gcm()
-//        val iv = rand.nextUBytes(12)
-//        val key = rand.nextUBytes(16)
-//        val blocks = 257
-//        val plainText = rand.nextUBytes(16 * blocks)
-//        val cypherText = aes256Gcm.encrypt(iv, key, plainText)
-//        assertFalse(plainText.contentEquals(cypherText), "plainText is the same as cypherText")
-//
-//        for (i in 0 until blocks) {
-//            val blockOfCypherText = cypherText.sliceArray(i * 16 until (i + 1) * 16)
-//            val decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(iv, key, blockOfCypherText, i)
-//            assertContentEquals(plainText.sliceArray(i * 16 until (i + 1) * 16), decryptedPlainText)
-//        }
-//    }
-//
-//    /***
-//     * tests when counter bytes can't be represented by three bytes
-//     */
-//    @Test
-//    fun encryptsAndDecrypts65536BlocksPartiallyOk() = runTest {
-//        val rand = Random(0)
-//        val aes256Gcm = Aes256Gcm()
-//        val iv = rand.nextUBytes(12)
-//        val key = rand.nextUBytes(16)
-//        val blocks = 65536
-//        val plainText = rand.nextUBytes(16 * blocks)
-//        val cypherText = aes256Gcm.encrypt(iv, key, plainText)
-//        assertFalse(plainText.contentEquals(cypherText), "plainText is the same as cypherText")
-//
-//        for (i in 0 until blocks) {
-//            val blockOfCypherText = cypherText.sliceArray(i * 16 until (i + 1) * 16)
-//            val decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(iv, key, blockOfCypherText, i)
-//            assertContentEquals(plainText.sliceArray(i * 16 until (i + 1) * 16), decryptedPlainText)
-//        }
-//    }
+
+    @Test
+    fun encryptsAndDecrypts3BlocksPartiallyOk() = runTest {
+        val rand = Random(0)
+        val aes256Gcm = Aes256Gcm()
+        val key = rand.nextUBytes(16)
+        val blocks = 3
+        val plainText = rand.nextUBytes(16 * blocks)
+        val encryptResult = aes256Gcm.encrypt(key, plainText)
+        assertFalse(plainText.contentEquals(encryptResult.cyphertext), "plainText is the same as cypherText")
+
+        val firstBlockCypherText = encryptResult.cyphertext.sliceArray(0 until 16)
+        var decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(encryptResult.iv, key, firstBlockCypherText, 0)
+        assertContentEquals(plainText.sliceArray(0 until 16), decryptedPlainText)
+
+        val secondBlockCypherText = encryptResult.cyphertext.sliceArray(16 until 32)
+        decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(encryptResult.iv, key, secondBlockCypherText, 1)
+        assertContentEquals(plainText.sliceArray(16 until 32), decryptedPlainText)
+
+        val thirdBlockCypherText = encryptResult.cyphertext.sliceArray(32 until 48)
+        decryptedPlainText = aes256Gcm.decryptAtIndexUnauthenticated(encryptResult.iv, key, thirdBlockCypherText, 2)
+        assertContentEquals(plainText.sliceArray(32 until 48), decryptedPlainText)
+    }
+
+    /***
+     * tests when counter bytes can't be represented by one byte
+     */
+    @Test
+    fun encryptsAndDecrypts257BlocksPartiallyOk() = runTest {
+        val rand = Random(0)
+        val aes256Gcm = Aes256Gcm()
+        val key = rand.nextUBytes(16)
+        val blocks = 257
+        val plainText = rand.nextUBytes(16 * blocks)
+        val encryptResult = aes256Gcm.encrypt(key, plainText)
+        assertFalse(plainText.contentEquals(encryptResult.cyphertext), "plainText is the same as cypherText")
+
+        for (i in 0 until blocks) {
+            val blockOfCypherText = encryptResult.cyphertext.sliceArray(i * 16 until (i + 1) * 16)
+            val decryptedPlainText =
+                aes256Gcm.decryptAtIndexUnauthenticated(encryptResult.iv, key, blockOfCypherText, i)
+            assertContentEquals(plainText.sliceArray(i * 16 until (i + 1) * 16), decryptedPlainText)
+        }
+    }
+
+    /***
+     * tests when counter bytes can't be represented by three bytes
+     */
+    @Test
+    fun encryptsAndDecrypts65536BlocksPartiallyOk() = runTest {
+        val rand = Random(0)
+        val aes256Gcm = Aes256Gcm()
+        val key = rand.nextUBytes(16)
+        val blocks = 65536
+        val plainText = rand.nextUBytes(16 * blocks)
+        val encryptResult = aes256Gcm.encrypt(key, plainText)
+        assertFalse(plainText.contentEquals(encryptResult.cyphertext), "plainText is the same as cypherText")
+
+        for (i in 0 until blocks) {
+            val blockOfCypherText = encryptResult.cyphertext.sliceArray(i * 16 until (i + 1) * 16)
+            val decryptedPlainText =
+                aes256Gcm.decryptAtIndexUnauthenticated(encryptResult.iv, key, blockOfCypherText, i)
+            assertContentEquals(plainText.sliceArray(i * 16 until (i + 1) * 16), decryptedPlainText)
+        }
+    }
 
 
 }

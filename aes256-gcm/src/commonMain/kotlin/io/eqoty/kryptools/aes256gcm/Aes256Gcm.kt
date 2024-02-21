@@ -2,6 +2,7 @@ package io.eqoty.kryptools.aes256gcm
 
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.CryptographyProvider
+import dev.whyoleg.cryptography.DelicateCryptographyApi
 import dev.whyoleg.cryptography.algorithms.symmetric.AES
 
 internal const val TAG_SIZE_BITS = 128
@@ -12,7 +13,7 @@ class Aes256Gcm() {
 
     val provider = CryptographyProvider.Default
     val gcmProvider = provider.get(AES.GCM)
-    val ctrProvider = provider.get(AES.CBC)
+    val ctrProvider = provider.get(AES.CTR)
 
     /***
      * @param iv - initialization vector (should be of size 12)
@@ -25,7 +26,8 @@ class Aes256Gcm() {
     ): AesGcmEncryptResult {
         val ivSizeBytes = 12
         val aesGcmkey = gcmProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
-        val ivAndCiphertext = aesGcmkey.cipher().encrypt(plaintext.asByteArray()).asUByteArray()
+
+        val ivAndCiphertext = aesGcmkey.cipher(TAG_SIZE_BITS.bits).encrypt(plaintext.asByteArray()).asUByteArray()
         return AesGcmEncryptResult(
             ivAndCiphertext.sliceArray(0 until ivSizeBytes),
             ivAndCiphertext.sliceArray(ivSizeBytes until ivAndCiphertext.size)
@@ -56,6 +58,7 @@ class Aes256Gcm() {
      * Danger there be dragons: This does not authenticate the partially decrypted content. Only use
      * if you know what you are doing.
      */
+    @OptIn(DelicateCryptographyApi::class)
     suspend fun decryptAtIndexUnauthenticated(
         iv: UByteArray,
         key: UByteArray,
@@ -63,14 +66,14 @@ class Aes256Gcm() {
         offset: Int,
         hasTag: Boolean = false
     ): UByteArray {
-//        val aesGcmkey = gcmProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
-//        return aesGcmkey.cipher(TAG_SIZE_BITS.bits).decrypt(ciphertext.asByteArray(), iv.asByteArray()).asUByteArray()
-        return ciphertext
+        val counter = getCounterBytes(iv, offset)
+        val aesCtrkey = ctrProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
+        return aesCtrkey.cipher().decrypt(counter.asByteArray(), ciphertext.asByteArray()).asUByteArray()
     }
 
 }
 
-fun Aes256Gcm.getCounterBytes(iv: UByteArray, offset: Int): UByteArray {
+private fun getCounterBytes(iv: UByteArray, offset: Int): UByteArray {
     // the GCM specification you can see that the IV for CTR is simply the IV, appended with four bytes 00000002
     // (i.e. a counter starting at zero, increased by one for calculating the authentication tag and again for the
     // starting value of the counter for encryption).
@@ -80,7 +83,7 @@ fun Aes256Gcm.getCounterBytes(iv: UByteArray, offset: Int): UByteArray {
 }
 
 
-internal fun Int.toUByteArray(): UByteArray {
+private fun Int.toUByteArray(): UByteArray {
     val bytes = UByteArray(4)
     (0..3).forEach { i -> bytes[bytes.size - 1 - i] = (this shr (i * 8)).toUByte() }
     return bytes
