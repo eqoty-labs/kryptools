@@ -38,5 +38,5 @@ org-cryptomator-sivMode = { module = "org.cryptomator:siv-mode", version.ref = "
 
 dev-whyoleg-cryptography-core = { module = "dev.whyoleg.cryptography:cryptography-core", version.ref = "cryptography-kotlin" }
 dev-whyoleg-cryptography-provider-jdk = { module = "dev.whyoleg.cryptography:cryptography-provider-jdk", version.ref = "cryptography-kotlin" }
-dev-whyoleg-cryptography-provider-webcrypto = { module = "dev.whyoleg.cryptography:cryptography-serialization", version.ref = "cryptography-kotlin" }
+dev-whyoleg-cryptography-provider-webcrypto = { module = "dev.whyoleg.cryptography:cryptography-provider-webcrypto", version.ref = "cryptography-kotlin" }
 dev-whyoleg-cryptography-provider-openssl3-prebuilt = { module = "dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt", version.ref = "cryptography-kotlin" }
