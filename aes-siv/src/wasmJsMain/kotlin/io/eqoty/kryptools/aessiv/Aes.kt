@@ -52,10 +52,6 @@ suspend fun aes_key(atu8_key: Uint8Array, si_algo: String): CryptoKey {
 // perform AES-CBC
 suspend fun aesCbc(d_key_cbc: CryptoKey, atu8_data: Uint8Array): Uint8Array {
     val crypto = getCrypto()
-    val encrypted: ArrayBuffer = crypto.subtle.encrypt(
-        createAesCbcParams(ATU8_ZERO_BLOCK).unsafeCast<AesCbcParams>(), d_key_cbc, atu8_data
-    ).await()
-
     val d_cipher = Uint8Array(
         crypto.subtle.encrypt(
             createAesCbcParams(ATU8_ZERO_BLOCK).unsafeCast<AesCbcParams>(), d_key_cbc, atu8_data
