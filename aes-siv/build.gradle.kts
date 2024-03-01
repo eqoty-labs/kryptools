@@ -62,7 +62,11 @@ kotlin {
             languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
             languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.dev.whyoleg.cryptography.core)
+            }
+        }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
@@ -73,18 +77,27 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.org.cryptomator.sivMode)
+                implementation(libs.dev.whyoleg.cryptography.provider.jdk)
             }
         }
         jsMain {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.dev.whyoleg.cryptography.provider.webcrypto)
             }
         }
         val wasmJsMain by getting {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.dev.whyoleg.cryptography.provider.webcrypto)
+            }
+        }
+        nativeMain {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(libs.dev.whyoleg.cryptography.provider.openssl3.prebuilt)
             }
         }
     }
