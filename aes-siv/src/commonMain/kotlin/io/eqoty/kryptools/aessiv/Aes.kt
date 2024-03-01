@@ -1,7 +1,6 @@
 package io.eqoty.kryptools.aessiv
 
 import dev.whyoleg.cryptography.CryptographyProvider
-import dev.whyoleg.cryptography.DelicateCryptographyApi
 import dev.whyoleg.cryptography.algorithms.symmetric.AES
 import kotlin.math.ceil
 
@@ -13,17 +12,16 @@ private val provider = CryptographyProvider.Default
 private val cbcProvider = provider.get(AES.CBC)
 private val ctrProvider = provider.get(AES.CTR)
 
-suspend fun aes_ctr_key(atu8_key: UByteArray): AES.CTR.Key {
+internal suspend fun aes_ctr_key(atu8_key: UByteArray): AES.CTR.Key {
     return ctrProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, atu8_key.asByteArray())
 }
 
-suspend fun aes_cbc_key(atu8_key: UByteArray): AES.CBC.Key {
+internal suspend fun aes_cbc_key(atu8_key: UByteArray): AES.CBC.Key {
     return cbcProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, atu8_key.asByteArray())
 }
 
 // perform AES-CBC
-@OptIn(DelicateCryptographyApi::class)
-suspend fun aesCbc(d_key_cbc: AES.CBC.Key, atu8_data: UByteArray): UByteArray {
+private suspend fun aesCbc(d_key_cbc: AES.CBC.Key, atu8_data: UByteArray): UByteArray {
     val result = d_key_cbc.cipher().encrypt(ATU8_ZERO_BLOCK.asByteArray(), atu8_data.asByteArray()).asUByteArray()
     val d_cipher = UByteArray(NB_AES_BLOCK)
     result.copyInto(d_cipher, 0, 0, NB_AES_BLOCK)
@@ -31,18 +29,18 @@ suspend fun aesCbc(d_key_cbc: AES.CBC.Key, atu8_data: UByteArray): UByteArray {
 }
 
 // perform AES-CTR
-@OptIn(DelicateCryptographyApi::class)
-suspend fun aesCtr(d_key_ctr: AES.CTR.Key, atu8_iv: UByteArray, atu8_data: UByteArray): UByteArray {
+internal suspend fun aesCtr(d_key_ctr: AES.CTR.Key, atu8_iv: UByteArray, atu8_data: UByteArray): UByteArray {
     val d_cipher = d_key_ctr.cipher().encrypt(atu8_iv.asByteArray(), atu8_data.asByteArray()).asUByteArray()
     return d_cipher
 }
 
 
 // pseudo-constant-time select
-fun select(xbValue: Int, xbRif1: Int, xbRif0: Int): Int = ((xbValue - 1).inv() and xbRif1) or ((xbValue - 1) and xbRif0)
+private fun select(xbValue: Int, xbRif1: Int, xbRif0: Int): Int =
+    ((xbValue - 1).inv() and xbRif1) or ((xbValue - 1) and xbRif0)
 
 // double block value in-place
-fun doubleBlock(atu8Block: UByteArray) {
+private fun doubleBlock(atu8Block: UByteArray) {
     var xbCarry = 0
 
     for (ibEach in NB_AES_BLOCK - 1 downTo 0) {
@@ -57,14 +55,14 @@ fun doubleBlock(atu8Block: UByteArray) {
     xbCarry = 0
 }
 
-fun xorBuffers(atu8A: UByteArray, atu8B: UByteArray) {
+private fun xorBuffers(atu8A: UByteArray, atu8B: UByteArray) {
     for (ibEach in 0 until atu8A.size) {
         atu8A[ibEach] = (atu8A[ibEach].toInt() xor atu8B[ibEach].toInt()).toUByte()
     }
 }
 
 // Assuming aesCbc, doubleBlock, xorBuffers are defined similarly as suspend functions or adapted Kotlin/JS functions
-suspend fun aesCmacInit(dKeyMac: AES.CBC.Key): suspend (atu8_data: UByteArray) -> UByteArray {
+private suspend fun aesCmacInit(dKeyMac: AES.CBC.Key): suspend (atu8_data: UByteArray) -> UByteArray {
     // k1 subkey generation
     val atu8K1 = aesCbc(dKeyMac, ATU8_ZERO_BLOCK)
     doubleBlock(atu8K1)
@@ -124,8 +122,7 @@ suspend fun aesCmacInit(dKeyMac: AES.CBC.Key): suspend (atu8_data: UByteArray) -
 }
 
 // performs S2V operation
-@OptIn(ExperimentalStdlibApi::class)
-suspend fun s2v(
+internal suspend fun s2v(
     d_key_rkd: AES.CBC.Key, atu8_plaintext: UByteArray, a_ad: Array<UByteArray> = arrayOf(UByteArray(0))
 ): UByteArray {
     val f_cmac = aesCmacInit(d_key_rkd)
