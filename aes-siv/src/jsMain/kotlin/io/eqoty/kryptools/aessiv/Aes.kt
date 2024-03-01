@@ -34,8 +34,7 @@ private fun getCrypto(): Crypto {
 }
 
 // language=JavaScript
-fun createAesCbcParams(iv: Uint8Array): dynamic =
-    js("({ name: 'AES-CBC', iv: iv})")
+fun createAesCbcParams(iv: Uint8Array): dynamic = js("({ name: 'AES-CBC', iv: iv})")
 
 // language=JavaScript
 fun createAesCtrParams(atu8_iv: Uint8Array, length: Int): dynamic =
@@ -83,8 +82,7 @@ fun doubleBlock(atu8Block: Uint8Array) {
     }
 
     atu8Block[NB_AES_BLOCK - 1] = ((atu8Block[NB_AES_BLOCK - 1].toInt() and 0xff) xor select(xbCarry, 0x87, 0)).toByte()
-    @Suppress("UNUSED_VALUE")
-    xbCarry = 0
+    @Suppress("UNUSED_VALUE") xbCarry = 0
 }
 
 fun xorBuffers(atu8A: Uint8Array, atu8B: Uint8Array) {
