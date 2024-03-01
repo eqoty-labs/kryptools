@@ -25,20 +25,19 @@ kotlin {
         browser()
         nodejs()
     }
-    macosX64()
-    macosArm64()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    linuxX64()
-    linuxArm64()
-    applyDefaultHierarchyTemplate()
+    iosArm64(); iosX64(); iosSimulatorArm64()
+    tvosArm64(); tvosX64(); tvosSimulatorArm64()
+    watchosArm32(); watchosArm64(); watchosX64(); watchosSimulatorArm64(); watchosDeviceArm64()
+    macosX64(); macosArm64()
+    linuxX64(); linuxArm64()
+    mingwX64()
+    androidNativeArm32(); androidNativeArm64(); androidNativeX86();androidNativeX64()
 
+    applyDefaultHierarchyTemplate()
     sourceSets {
         all {
             languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
             languageSettings.optIn("dev.whyoleg.cryptography.DelicateCryptographyApi")
-            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }
         val commonMain by getting {
             dependencies {
