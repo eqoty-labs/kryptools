@@ -60,10 +60,3 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
     dependsOnTasks.add(this.name.replace("publish", "sign").replaceAfter("Publication", ""))
     dependsOn(dependsOnTasks)
 }
-
-plugins.withId("com.vanniktech.maven.publish") {
-    mavenPublishing {
-        publishToMavenCentral(SonatypeHost.S01)
-        signAllPublications()
-    }
-}
