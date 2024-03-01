@@ -53,21 +53,18 @@ kotlin {
         jvmMain {
             dependsOn(commonMain)
             dependencies {
-                implementation(libs.org.cryptomator.sivMode)
                 implementation(libs.dev.whyoleg.cryptography.provider.jdk)
             }
         }
         jsMain {
             dependsOn(commonMain)
             dependencies {
-                implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.dev.whyoleg.cryptography.provider.webcrypto)
             }
         }
         val wasmJsMain by getting {
             dependsOn(commonMain)
             dependencies {
-                implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.dev.whyoleg.cryptography.provider.webcrypto)
             }
         }
