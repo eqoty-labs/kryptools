@@ -8,18 +8,19 @@ com-vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.re
 
 [versions]
 
-kotlin = "1.9.22"
+kotlin = "2.2.20"
 
-vanniktech-publish = "0.27.0"
-okio = "3.8.0"
-kotlinx-serialization = "1.6.3"
-kotlinx-coroutines = "1.8.0"
+vanniktech-publish = "0.34.0"
+okio = "3.16.0"
+kotlinx-serialization = "1.9.0"
+kotlinx-coroutines = "1.10.2"
 
-bignum = "0.3.9"
+bignum = "0.3.10"
 
 bip39 = "1.0.8-mpp"
+## ⬆ = "1.0.8-SNAPSHOT"
 
-cryptography-kotlin = "0.3.0"
+cryptography-kotlin = "0.5.0"
 
 [libraries]
 
@@ -34,6 +35,8 @@ bignum-serialization-kotlinx = { module = "com.ionspin.kotlin:bignum-serializati
 io-github-luca992-cash-z-ecc-android-kotlinBip39 = { module = "io.github.luca992.cash.z.ecc.android:kotlin-bip39", version.ref = "bip39" }
 
 dev-whyoleg-cryptography-core = { module = "dev.whyoleg.cryptography:cryptography-core", version.ref = "cryptography-kotlin" }
+dev-whyoleg-cryptography-provider-optimal = { module = "dev.whyoleg.cryptography:cryptography-provider-optimal", version.ref = "cryptography-kotlin" }
 dev-whyoleg-cryptography-provider-jdk = { module = "dev.whyoleg.cryptography:cryptography-provider-jdk", version.ref = "cryptography-kotlin" }
 dev-whyoleg-cryptography-provider-webcrypto = { module = "dev.whyoleg.cryptography:cryptography-provider-webcrypto", version.ref = "cryptography-kotlin" }
 dev-whyoleg-cryptography-provider-openssl3-prebuilt = { module = "dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt", version.ref = "cryptography-kotlin" }
+dev-whyoleg-cryptography-random = { module = "dev.whyoleg.cryptography:cryptography-random", version.ref = "cryptography-kotlin" }

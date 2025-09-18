@@ -1,7 +1,7 @@
 package io.eqoty.kryptools.aessiv
 
 import dev.whyoleg.cryptography.CryptographyProvider
-import dev.whyoleg.cryptography.algorithms.symmetric.AES
+import dev.whyoleg.cryptography.algorithms.AES
 import kotlin.math.ceil
 
 const val NB_AES_BLOCK = 16
@@ -13,16 +13,16 @@ private val cbcProvider = provider.get(AES.CBC)
 private val ctrProvider = provider.get(AES.CTR)
 
 internal suspend fun aes_ctr_key(atu8_key: UByteArray): AES.CTR.Key {
-    return ctrProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, atu8_key.asByteArray())
+    return ctrProvider.keyDecoder().decodeFromByteArray(AES.Key.Format.RAW, atu8_key.asByteArray())
 }
 
 internal suspend fun aes_cbc_key(atu8_key: UByteArray): AES.CBC.Key {
-    return cbcProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, atu8_key.asByteArray())
+    return cbcProvider.keyDecoder().decodeFromByteArray(AES.Key.Format.RAW, atu8_key.asByteArray())
 }
 
 // perform AES-CBC
 private suspend fun aesCbc(d_key_cbc: AES.CBC.Key, atu8_data: UByteArray): UByteArray {
-    val result = d_key_cbc.cipher().encrypt(ATU8_ZERO_BLOCK.asByteArray(), atu8_data.asByteArray()).asUByteArray()
+    val result = d_key_cbc.cipher().encryptWithIv(ATU8_ZERO_BLOCK.asByteArray(), atu8_data.asByteArray()).asUByteArray()
     val d_cipher = UByteArray(NB_AES_BLOCK)
     result.copyInto(d_cipher, 0, 0, NB_AES_BLOCK)
     return d_cipher
@@ -30,7 +30,7 @@ private suspend fun aesCbc(d_key_cbc: AES.CBC.Key, atu8_data: UByteArray): UByte
 
 // perform AES-CTR
 internal suspend fun aesCtr(d_key_ctr: AES.CTR.Key, atu8_iv: UByteArray, atu8_data: UByteArray): UByteArray {
-    val d_cipher = d_key_ctr.cipher().encrypt(atu8_iv.asByteArray(), atu8_data.asByteArray()).asUByteArray()
+    val d_cipher = d_key_ctr.cipher().encryptWithIv(atu8_iv.asByteArray(), atu8_data.asByteArray()).asUByteArray()
     return d_cipher
 }
 

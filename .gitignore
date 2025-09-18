@@ -159,3 +159,4 @@ lint/tmp/
 nativelibs/libaes_siv_build/
 
 **/externals
+/.kotlin/

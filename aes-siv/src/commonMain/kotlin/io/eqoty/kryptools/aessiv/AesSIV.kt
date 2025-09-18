@@ -1,6 +1,7 @@
 package io.eqoty.kryptools.aessiv
 
-import dev.whyoleg.cryptography.algorithms.symmetric.AES
+import dev.whyoleg.cryptography.algorithms.AES
+
 
 class AesSIV {
 

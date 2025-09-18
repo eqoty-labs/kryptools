@@ -1,6 +1,3 @@
-import com.vanniktech.maven.publish.SonatypeHost
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.org.jetbrains.kotlin.plugin.serialization)
@@ -12,11 +9,7 @@ version = project.property("VERSION_NAME") as String
 
 
 kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = JvmTarget.JVM_1_8.target
-        }
-    }
+    jvm {}
     js(IR) {
         browser()
         nodejs()
@@ -32,14 +25,13 @@ kotlin {
     macosX64(); macosArm64()
     linuxX64(); linuxArm64()
     mingwX64()
-    androidNativeArm32(); androidNativeArm64(); androidNativeX86();androidNativeX64()
+    androidNativeArm32(); androidNativeArm64(); androidNativeX86(); androidNativeX64()
 
     applyDefaultHierarchyTemplate()
     sourceSets {
         all {
             languageSettings.optIn("kotlin.ExperimentalUnsignedTypes")
         }
-        val commonMain by getting
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

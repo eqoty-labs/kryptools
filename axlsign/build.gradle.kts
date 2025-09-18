@@ -1,6 +1,3 @@
-import com.vanniktech.maven.publish.SonatypeHost
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.org.jetbrains.kotlin.plugin.serialization)
@@ -12,11 +9,7 @@ version = project.property("VERSION_NAME") as String
 
 
 kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = JvmTarget.JVM_1_8.target
-        }
-    }
+    jvm {}
     js(IR) {
         browser {
             testTask(Action {
@@ -38,7 +31,7 @@ kotlin {
     macosX64(); macosArm64()
     linuxX64(); linuxArm64()
     mingwX64()
-    androidNativeArm32(); androidNativeArm64(); androidNativeX86();androidNativeX64()
+    androidNativeArm32(); androidNativeArm64(); androidNativeX86(); androidNativeX64()
 
     applyDefaultHierarchyTemplate()
 
@@ -52,11 +45,4 @@ kotlin {
             }
         }
     }
-}
-
-// https://youtrack.jetbrains.com/issue/KT-46466
-val dependsOnTasks = mutableListOf<String>()
-tasks.withType<AbstractPublishToMaven>().configureEach {
-    dependsOnTasks.add(this.name.replace("publish", "sign").replaceAfter("Publication", ""))
-    dependsOn(dependsOnTasks)
 }

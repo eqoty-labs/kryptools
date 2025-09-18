@@ -3,7 +3,7 @@ package io.eqoty.kryptools.aesgcm
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.DelicateCryptographyApi
-import dev.whyoleg.cryptography.algorithms.symmetric.AES
+import dev.whyoleg.cryptography.algorithms.AES
 
 private const val TAG_SIZE_BITS = 128
 
@@ -23,7 +23,7 @@ class AesGcm {
         key: UByteArray, plaintext: UByteArray
     ): AesGcmEncryptResult {
         val ivSizeBytes = 12
-        val aesGcmkey = gcmProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
+        val aesGcmkey = gcmProvider.keyDecoder().decodeFromByteArray(AES.Key.Format.RAW, key.asByteArray())
 
         val ivAndCiphertext = aesGcmkey.cipher(TAG_SIZE_BITS.bits).encrypt(plaintext.asByteArray()).asUByteArray()
         return AesGcmEncryptResult(
@@ -40,7 +40,7 @@ class AesGcm {
     suspend fun decrypt(
         iv: UByteArray, key: UByteArray, ciphertext: UByteArray
     ): UByteArray {
-        val aesGcmkey = gcmProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
+        val aesGcmkey = gcmProvider.keyDecoder().decodeFromByteArray(AES.Key.Format.RAW, key.asByteArray())
         return aesGcmkey.cipher(TAG_SIZE_BITS.bits).decrypt((iv + ciphertext).asByteArray()).asUByteArray()
     }
 
@@ -59,8 +59,8 @@ class AesGcm {
         iv: UByteArray, key: UByteArray, ciphertext: UByteArray, offset: Int, hasTag: Boolean = false
     ): UByteArray {
         val counter = getCounterBytes(iv, offset)
-        val aesCtrkey = ctrProvider.keyDecoder().decodeFrom(AES.Key.Format.RAW, key.asByteArray())
-        return aesCtrkey.cipher().decrypt(counter.asByteArray(), ciphertext.asByteArray()).asUByteArray()
+        val aesCtrkey = ctrProvider.keyDecoder().decodeFromByteArray(AES.Key.Format.RAW, key.asByteArray())
+        return aesCtrkey.cipher().decryptWithIv(counter.asByteArray(), ciphertext.asByteArray()).asUByteArray()
     }
 
 }

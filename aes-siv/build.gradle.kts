@@ -1,5 +1,4 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
@@ -11,11 +10,7 @@ version = project.property("VERSION_NAME") as String
 
 
 kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = JvmTarget.JVM_1_8.target
-        }
-    }
+    jvm {}
     js(IR) {
         browser()
         nodejs()
@@ -31,7 +26,7 @@ kotlin {
     macosX64(); macosArm64()
     linuxX64(); linuxArm64()
     mingwX64()
-    androidNativeArm32(); androidNativeArm64(); androidNativeX86();androidNativeX64()
+    androidNativeArm32(); androidNativeArm64(); androidNativeX86(); androidNativeX64()
 
     applyDefaultHierarchyTemplate()
     sourceSets {
@@ -42,36 +37,13 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.dev.whyoleg.cryptography.core)
+                implementation(libs.dev.whyoleg.cryptography.provider.optimal)
             }
         }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.coroutines.test)
-            }
-        }
-        jvmMain {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(libs.dev.whyoleg.cryptography.provider.jdk)
-            }
-        }
-        jsMain {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(libs.dev.whyoleg.cryptography.provider.webcrypto)
-            }
-        }
-        val wasmJsMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(libs.dev.whyoleg.cryptography.provider.webcrypto)
-            }
-        }
-        nativeMain {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(libs.dev.whyoleg.cryptography.provider.openssl3.prebuilt)
             }
         }
     }

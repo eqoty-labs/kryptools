@@ -1,6 +1,3 @@
-import com.vanniktech.maven.publish.SonatypeHost
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.org.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.org.jetbrains.kotlin.plugin.serialization)
@@ -12,11 +9,7 @@ version = project.property("VERSION_NAME") as String
 
 
 kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = JvmTarget.JVM_1_8.target
-        }
-    }
+    jvm {}
     js(IR) {
         browser()
         nodejs()
@@ -27,7 +20,7 @@ kotlin {
         nodejs()
     }
 
-    iosArm64(); iosX64() ;iosSimulatorArm64()
+    iosArm64(); iosX64(); iosSimulatorArm64()
     tvosArm64(); tvosX64(); tvosSimulatorArm64()
     watchosArm32(); watchosArm64(); watchosSimulatorArm64()
     macosX64(); macosArm64()
@@ -53,7 +46,7 @@ kotlin {
                 implementation(libs.com.squareup.okio)
                 implementation(libs.bignum)
                 implementation(libs.bignum.serialization.kotlinx)
-                implementation("dev.whyoleg.cryptography:cryptography-random:0.3.0-SNAPSHOT")
+                implementation(libs.dev.whyoleg.cryptography.random)
                 implementation(libs.io.github.luca992.cash.z.ecc.android.kotlinBip39)
             }
         }
