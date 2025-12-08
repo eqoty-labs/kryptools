@@ -15,11 +15,11 @@ class AesGcmTests {
 
     @Test
     fun encryptsAndDecryptsOk() = runTest {
-        val rand = Random(0)
         val aesGcm = AesGcm()
-        val key = rand.nextUBytes(32)
-        val plainText = rand.nextUBytes(256)
-        val result = aesGcm.encrypt(key, plainText)
+        val iv = Random.nextUBytes(12)
+        val key = Random.nextUBytes(32)
+        val plainText = Random.nextUBytes(256)
+        val result = aesGcm.encrypt(iv, key, plainText)
         val decryptedPlainText = aesGcm.decrypt(result.iv, key, result.cyphertext)
         val tagBytesSize = 16
         assertEquals(plainText.size, result.cyphertext.size - tagBytesSize)
@@ -28,12 +28,12 @@ class AesGcmTests {
 
     @Test
     fun encryptsAndDecrypts3BlocksPartiallyOk() = runTest {
-        val rand = Random(0)
         val aesGcm = AesGcm()
-        val key = rand.nextUBytes(32)
+        val iv = Random.nextUBytes(12)
+        val key = Random.nextUBytes(32)
         val blocks = 3
-        val plainText = rand.nextUBytes(16 * blocks)
-        val encryptResult = aesGcm.encrypt(key, plainText)
+        val plainText = Random.nextUBytes(16 * blocks)
+        val encryptResult = aesGcm.encrypt(iv, key, plainText)
         assertFalse(plainText.contentEquals(encryptResult.cyphertext), "plainText is the same as cypherText")
 
         val firstBlockCypherText = encryptResult.cyphertext.sliceArray(0 until 16)
@@ -54,12 +54,12 @@ class AesGcmTests {
      */
     @Test
     fun encryptsAndDecrypts257BlocksPartiallyOk() = runTest {
-        val rand = Random(0)
         val aesGcm = AesGcm()
-        val key = rand.nextUBytes(32)
+        val iv = Random.nextUBytes(12)
+        val key = Random.nextUBytes(32)
         val blocks = 257
-        val plainText = rand.nextUBytes(16 * blocks)
-        val encryptResult = aesGcm.encrypt(key, plainText)
+        val plainText = Random.nextUBytes(16 * blocks)
+        val encryptResult = aesGcm.encrypt(iv, key, plainText)
         assertFalse(plainText.contentEquals(encryptResult.cyphertext), "plainText is the same as cypherText")
 
         for (i in 0 until blocks) {
@@ -75,12 +75,12 @@ class AesGcmTests {
      */
     @Test
     fun encryptsAndDecrypts65536BlocksPartiallyOk() = runTest {
-        val rand = Random(0)
         val aesGcm = AesGcm()
-        val key = rand.nextUBytes(32)
+        val iv = Random.nextUBytes(12)
+        val key = Random.nextUBytes(32)
         val blocks = 65536
-        val plainText = rand.nextUBytes(16 * blocks)
-        val encryptResult = aesGcm.encrypt(key, plainText)
+        val plainText = Random.nextUBytes(16 * blocks)
+        val encryptResult = aesGcm.encrypt(iv, key, plainText)
         assertFalse(plainText.contentEquals(encryptResult.cyphertext), "plainText is the same as cypherText")
 
         for (i in 0 until blocks) {

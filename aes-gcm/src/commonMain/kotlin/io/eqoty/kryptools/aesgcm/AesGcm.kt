@@ -4,6 +4,7 @@ import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.DelicateCryptographyApi
 import dev.whyoleg.cryptography.algorithms.AES
+import dev.whyoleg.cryptography.algorithms.AES.IvEncryptor
 
 private const val TAG_SIZE_BITS = 128
 
@@ -19,16 +20,17 @@ class AesGcm {
      * @param key - the secret key (should be of size 16)
      * @param plaintext - the binary to encrypt
      */
+    @OptIn(DelicateCryptographyApi::class)
     suspend fun encrypt(
+        iv: UByteArray,
         key: UByteArray, plaintext: UByteArray
     ): AesGcmEncryptResult {
-        val ivSizeBytes = 12
         val aesGcmkey = gcmProvider.keyDecoder().decodeFromByteArray(AES.Key.Format.RAW, key.asByteArray())
-
-        val ivAndCiphertext = aesGcmkey.cipher(TAG_SIZE_BITS.bits).encrypt(plaintext.asByteArray()).asUByteArray()
+        val ivEncryptor = aesGcmkey.cipher(TAG_SIZE_BITS.bits) as IvEncryptor
+        val ciphertext = ivEncryptor.encryptWithIv(iv.asByteArray(), plaintext.asByteArray()).asUByteArray()
         return AesGcmEncryptResult(
-            ivAndCiphertext.sliceArray(0 until ivSizeBytes),
-            ivAndCiphertext.sliceArray(ivSizeBytes until ivAndCiphertext.size)
+            iv,
+            ciphertext
         )
     }
 
